@@ -207,6 +207,7 @@ pod_date.setUTCMilliseconds(0)
 pod_date.setUTCSeconds(0)
 pod_date.setUTCMinutes(0)
 pod_date.setUTCHours(0)
+pod_date=new Date(pod_date.getTime()-24*60*60*1000)
 
 var image_info
 
@@ -265,8 +266,8 @@ function next_style()
 var image_info_html=
 "<a href='http://reddit.com%(permalink)s'>%(title)s</a><br/>"+
 "By <a href='http://reddit.com/u/%(author)s'>%(author)s</a>"+
-"            <a id='previous_style_btn' class='button'>&lt;&lt;</a>"+
-"&nbsp;&nbsp;<a id='next_style_btn' class='button'>&gt;&gt;</a>"
+"            <a id='previous_style_btn' class='button' style='cursor: pointer;'>&lt;&lt;</a>"+
+"&nbsp;&nbsp;<a id='next_style_btn' class='button' style='cursor: pointer;'>&gt;&gt;</a>"
 function update_image_info()
 {
 	var footer=document.getElementsByClassName('author_info')[0]
