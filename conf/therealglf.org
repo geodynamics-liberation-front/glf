@@ -1,0 +1,40 @@
+<VirtualHost *:80>
+	ServerName therealglf.org
+	DocumentRoot /var/glf/html
+
+	ErrorLog ${APACHE_LOG_DIR}/glf-error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel debug
+
+	CustomLog ${APACHE_LOG_DIR}/glf-access.log combined
+	<Directory "/var/glf/html">
+		Require all granted
+		Options +Indexes +FollowSymLinks +ExecCGI
+		AllowOverride AuthConfig FileInfo
+		Order allow,deny
+		Allow from all
+	</Directory>
+</VirtualHost>
+<VirtualHost *:80>
+	ServerName www.therealglf.org
+	RewriteEngine on
+	RewriteCond %{HTTP_HOST} ^www\.therealglf\.org
+	RewriteRule ^(.*)$ http://therealglf.org$1 [R=permanent,L]
+	CustomLog ${APACHE_LOG_DIR}/www.glf.org-access.log combined
+</VirtualHost>
+<VirtualHost *:80>
+	ServerName www.therealglf.com
+	RewriteEngine on
+	RewriteCond %{HTTP_HOST} ^www\.therealglf\.com
+	RewriteRule ^(.*)$ http://therealglf.org$1 [R=permanent,L]
+	CustomLog ${APACHE_LOG_DIR}/www.glf.com-access.log combined
+</VirtualHost>
+<VirtualHost *:80>
+	ServerName therealglf.com
+	RewriteEngine on
+	RewriteCond %{HTTP_HOST} ^therealglf\.com
+	RewriteRule ^(.*)$ http://therealglf.org$1 [R=permanent,L]
+	CustomLog ${APACHE_LOG_DIR}/glf.com-access.log combined
+</VirtualHost>

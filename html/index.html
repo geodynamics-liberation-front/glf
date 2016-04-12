@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Geodynamics Liberation Front</title>
+<link href='https://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,400italic,300italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+<link id="background_style" rel='stylesheet' type='text/css'>
+<style>
+
+* {
+	margin:0;
+	padding: 0;
+}
+
+.menu {
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 3ex;
+	line-height: 3ex;
+	color: rgba(255,255,255,1.0);
+	background: rgba(0,0,0,1.0);
+	opacity: 0.0;
+	transition: opacity 1s;
+	font-family: Roboto, sans-serif;
+	font-size: 14pt;
+	list-style-type: none;
+}
+
+.menu>ul {
+	white-space: nowrap;
+	display: inline-block;
+	text-align: left;
+}
+.menu ul li{
+	text-align: left;
+}
+
+.menu>ul>li {
+	display: inline-block;
+	vertical-align: top;
+	list-style-type: none;
+	margin-left: 1em;
+	margin-right: 1em;
+	
+}
+
+.menu>ul>li>div>ul {
+	display: none;
+	list-style-type: none;
+	background: rgba(0,0,0,1);
+	padding: .5em;
+}
+
+.menu>ul>li>div:hover>ul {
+	display: block;
+	list-style-type: none;
+}
+
+.menu a {
+	text-decoration: none;
+	color: inherit;
+	border-bottom: 1px solid rgba(0,0,0,0);
+}
+
+.menu a:hover {
+	text-decoration: none;
+	color: inherit;
+	border-bottom: 1px dashed rgba(255,255,255,1.0);
+}
+
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.bgimage-container {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: -1000;
+}
+
+
+.bgimage {
+	max-width: 100vw; 	
+	max-height: 100vh;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.center-text-container {
+	position: fixed;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	z-index: -1000;
+}
+
+
+.center-text {
+	font-family: Quicksand, sans-serif;
+	font-size: 72pt;
+	font-weight: 700;
+	color: rgba(255,255,255,.75);
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: rgba(50,50,50,.75);
+	opacity: 0.0;
+	transition: opacity 1s;
+	width: 100%; 	
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.text-container {
+	padding-left: 20%;
+	padding-right: 20%
+}
+
+.text-container p {
+	text-indent: 3em;
+	margin-bottom: 1ex;
+}
+
+.text-body {
+	font-family: Roboto, sans-serif;
+	font-size: 14pt;
+	padding: 20px;
+	color: #dddddd;
+	background: rgba(0,0,0,.75);
+}
+.text-padding{
+	height: 100vh;
+}
+.fade-in {
+	height: 10vh;
+	background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.75) 100%);
+}
+.fade-out {
+	height: 10vh;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%,rgba(0,0,0,0) 100%);
+}
+
+footer {
+    margin-bottom: 3px;
+    margin-left: -3px;
+    text-align: right;
+    vertical-align: middle;
+    line-height: normal;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
+
+.author_info {
+	font-family: Quicksand, sans-serif;
+	font-size: 8pt;
+	color: #dddddd;
+	float: right;
+	padding: 5px;
+	background: rgba(0,0,0,0.5);
+	opacity: 0;
+	transition: opacity .5s;
+}
+
+.author_info a {
+	color: #dddddd
+}
+
+.author_info:hover {
+	opacity: 1;
+}
+
+.info_icon:hover+.author_info {
+	opacity: 1;
+}
+
+.info_icon {
+	float: right;
+	color: #dddddd;
+	font-family: Quicksand, sans-serif;
+	font-size: 14pt;
+	font-weight: 700;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 5px;
+	border: 1px solid #dddddd;
+	border-radius: 5px;
+}
+</style>
+<script src="script/sprintf.js"></script>
+<script>
+var pod_date=new Date()
+pod_date.setUTCMilliseconds(0)
+pod_date.setUTCSeconds(0)
+pod_date.setUTCMinutes(0)
+pod_date.setUTCHours(0)
+
+var image_info
+
+var timeout_id
+function check_top()
+{
+	if($(".fade-in").position().top-$(window).scrollTop()<$(window).height()) 
+	{
+		$(".menu").css("opacity",1.0) /* show the menu */
+		$(".center-text").css("opacity",0.0) /* hide the scroll message */
+		if( timeout_id!=null ) { clearTimeout(timeout_id) }
+		timeout_id=null
+	} 
+	else 
+	{
+		$(".menu").css("opacity",0.0) /* hide the menu */
+		if( timeout_id!=null ) { clearTimeout(timeout_id) }
+		timeout_id=setTimeout(function () { $(".center-text").css("opacity",1.0); timeout_id=null},2000) /* show the scroll message in 2 seconds */
+	} 
+	
+}
+
+function set_style(d)
+{
+	d=d||pod_date
+	var date_string=sprintf("%04d.%02d.%02d",d.getUTCFullYear(),(d.getUTCMonth()+1),d.getUTCDate())
+	console.log(date_string)
+    var xobj = new XMLHttpRequest();
+    xobj.overrideMimeType("application/json");
+    xobj.open('GET', 'backgrounds/'+date_string+'.js', true); 
+    xobj.onreadystatechange = function () {
+		if (xobj.readyState == 4 && xobj.status == "200") 
+		{
+			image_info=JSON.parse(xobj.responseText)
+			update_image_info()
+			background_image.setAttribute('src','backgrounds/'+date_string+'.jpg')		
+			background_style.setAttribute('href','backgrounds/'+date_string+'.css')		
+			pod_date=d
+			console.log(pod_date)
+            // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+		}
+    };
+    xobj.send(null);  
+}
+
+function previous_style()
+{
+	set_style(new Date(pod_date.getTime()-24*60*60*1000))
+}
+
+function next_style()
+{
+	set_style(new Date(pod_date.getTime()+24*60*60*1000))
+}
+
+var image_info_html=
+"<a href='http://reddit.com%(permalink)s'>%(title)s</a><br/>"+
+"By <a href='http://reddit.com/u/%(author)s'>%(author)s</a>"+
+"            <a id='previous_style_btn' class='button'>&lt;&lt;</a>"+
+"&nbsp;&nbsp;<a id='next_style_btn' class='button'>&gt;&gt;</a>"
+function update_image_info()
+{
+	var footer=document.getElementsByClassName('author_info')[0]
+	footer.innerHTML=sprintf(image_info_html,image_info)
+	$("#previous_style_btn").click(previous_style)
+	$("#next_style_btn").click(next_style)
+}
+
+function init()
+{
+	set_style()
+	// Watch for scrolling
+	$(window).scroll(check_top)
+	check_top()
+	
+}
+
+</script>
+</head>
+
+<body>
+
+<nav class="menu">
+	<ul>
+	<li><a href="/">home</a> </li>
+	<li> <a href="/about">about</a> </li>
+	<li> <a href="/blog">blog</a> </li>
+	<li> <div>projects
+		<ul>
+			<li><a href="/js-turtle/about/">javascript turtle graphics</a></li>
+			<li><a href="/frequency-generator/about/">frequency generator</a></li>
+			<li><a href="/code-breaker/about/">code breaker</a></li>
+			<li><a href="/orbits/about/">orbits</a></li>
+			<li><a href="/l.e.m./about/">lunar excursion module</a></li>
+		</ul>
+	</div>
+	</li>
+</nav>
+
+<div class="bgimage-container">
+	<img id="background_image" class="bgimage"/>
+</div>
+
+<div class="center-text-container">
+	<div class="center-text">
+	Scroll Down
+	</div>
+</div>
+
+<div class="text-container">
+	<div class="text-padding"></div>
+	<div class="fade-in"></div>
+	<div class="text-body">
+	<p>
+	The Geodynamics Liberation Front is an outreach organization intended to exposes students and the general public to scientific concepts using the Earth and Earth processes as a pedagogical tool to teach Science, Technology, Art, Engineering and Math (STEAM).
+	</p>
+	<p style="text-align: center">
+	MORE COMING SOON
+	</p>
+	</div>
+	<div class="fade-out"></div>
+	<div class="text-padding"></div>
+</div>
+<footer>
+	<div class="info_icon">i</div>
+	<div class="author_info"></div>
+</fotter>
+
+<script src="../script/jquery.js"></script>
+<script>
+$( init )
+</script>
+</body>
+
+</html>

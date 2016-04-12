@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Title of the document</title>
+<style>
+* {
+	margin:0;
+	padding: 0;
+}
+
+body {
+	background: #5b5f6c;
+}
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.menu {
+	text-align: center;
+	width: 100%;
+	position: fixed;
+	height: 3ex;
+	line-height: 3ex;
+	color: rgba(255,255,255,1.0);
+	background: rgba(0,0,0,1.0);
+	opacity: 0.0;
+	transition: opacity 1s;
+	font-family: sans-serif;
+	font-size: 14pt;
+}
+
+.bgimage-container {
+	position: fixed;
+	max-height: 100vh;
+	overflow: hidden;
+	z-index: -1000;
+}
+
+
+.bgimage {
+	width: 100%; 
+}
+
+.text-container {
+	padding-left: 20%;
+	padding-right: 20%
+}
+
+.text-container p {
+	text-indent: 3em;
+	margin-bottom: 1ex;
+}
+
+.text-body {
+	font-family: sans-serif;
+	font-size: 14pt;
+	padding: 20px;
+	color: #ffffdd;
+	background: rgba(0,0,0,.5);
+}
+.text-padding{
+	height: 100vh;
+}
+.fade-in {
+	height: 10vh;
+	background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.5) 100%);
+}
+.fade-out {
+	height: 10vh;
+	background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0) 100%);
+}
+</style>
+<script>
+function init()
+{
+	// Watch for scrolling
+	$(window).scroll(function(){ if($(".fade-in").position().top-$(window).scrollTop()<$(window).height()) {$(".menu").css("opacity",1.0)} else {$(".menu").css("opacity",0.0)} })
+}
+</script>
+</head>
+
+<body>
+<div class="menu">
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer gravida
+</div>
+
+<div class="bgimage-container">
+<img src="volcano_smokes.jpg" class="bgimage"/>
+</div>
+
+<div class="text-container">
+<div class="text-padding"></div>
+<div class="fade-in"></div>
+<div class="text-body">
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer gravida porta velit, vel ultrices augue finibus ac. Etiam magna quam, commodo suscipit nulla sed, mollis suscipit lectus. Aenean pretium arcu diam, in posuere odio placerat quis. Pellentesque vestibulum mi eget suscipit sagittis. In nec justo nec massa mattis aliquet. Vestibulum eros neque, laoreet et convallis quis, interdum nec metus. Donec commodo magna quis tempor pharetra. Sed vestibulum lacus vitae erat maximus, a egestas justo interdum. Donec convallis, quam in sollicitudin aliquet, sem diam ultricies eros, sit amet gravida elit magna vitae libero. Sed urna augue, eleifend in risus id, hendrerit convallis est. Duis auctor consequat justo, vitae auctor dolor porttitor eu. Phasellus sit amet sollicitudin tellus, quis fringilla justo. Suspendisse potenti. Aenean bibendum, augue quis blandit dapibus, neque quam interdum lacus, eget pharetra ligula lorem elementum arcu. Morbi vel aliquet erat.
+</p>
+<p>
+Etiam eget sapien felis. Mauris in ex tristique, placerat sem vel, luctus metus. Cras eget lorem eget magna sodales condimentum vel pretium mi. Phasellus consequat, urna ut vestibulum varius, mi enim pellentesque sapien, eget fringilla purus velit vel tortor. Nullam ipsum ex, commodo a ornare ut, ultrices vitae leo. Nam iaculis orci lacus, a rutrum urna consequat id. Integer a tempor ligula. Vivamus at sem non ex imperdiet dignissim. Donec a ornare arcu. Nullam sit amet placerat ligula. Fusce at scelerisque mauris. Etiam luctus vulputate lacus non imperdiet. Aliquam eget condimentum velit. Praesent in lacinia est.
+</p>
+<p>
+Sed diam dui, sagittis non ullamcorper et, imperdiet vitae lectus. In a quam maximus, fermentum nisi ac, laoreet risus. Nam gravida massa quis nulla dignissim, sit amet malesuada ligula egestas. Nunc dui neque, sollicitudin non tincidunt vel, sollicitudin ut augue. Curabitur sed dictum tellus. Fusce commodo ultricies purus ut congue. Pellentesque sed sapien in libero sagittis malesuada. Vivamus non lectus luctus, placerat leo mollis, porttitor tortor. Cras hendrerit lobortis orci vel aliquam. Mauris placerat non quam id viverra. Cras nec magna auctor, laoreet metus id, varius sem. Mauris sit amet quam ornare, congue ligula eget, interdum ligula. Fusce feugiat urna sed mauris accumsan gravida. Aliquam ac nunc diam. Praesent congue convallis risus, dapibus tempor lacus malesuada at.
+</p>
+<p>
+Cras dignissim lacus lectus, non aliquam felis aliquam id. Suspendisse posuere ante quis tortor sodales, in vehicula diam sollicitudin. Cras et mi vehicula, dapibus purus laoreet, auctor mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Sed faucibus libero nulla, et efficitur tortor vestibulum sit amet. Nullam a ante et tellus pulvinar dapibus in in ante.
+</p>
+<p>
+Vivamus facilisis semper laoreet. Aliquam magna mi, viverra non elementum a, placerat vitae lacus. Duis luctus turpis erat, at congue diam pretium eget. Quisque molestie felis fermentum, ultrices felis eu, convallis leo. Morbi velit libero, feugiat ac ultrices et, egestas a turpis. Nullam malesuada vel orci porta euismod. Fusce in neque in nisl sollicitudin pharetra. Nulla pharetra nunc eleifend, vehicula quam a, tincidunt tortor.
+</p>
+</div>
+<div class="fade-out"></div>
+<div class="text-padding"></div>
+<div>
+<script src="../script/jquery.js"></script>
+<script>
+$( init )
+</script>
+</body>
+
+</html>

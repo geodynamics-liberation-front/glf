@@ -1,0 +1,19 @@
+<VirtualHost *:80>
+	ServerName glf
+	DocumentRoot /var/glf/glf/html
+
+	ErrorLog ${APACHE_LOG_DIR}/glf-error.log
+
+	# Possible values include: debug, info, notice, warn, error, crit,
+	# alert, emerg.
+	LogLevel debug
+
+	CustomLog ${APACHE_LOG_DIR}/glf-access.log combined
+	<Directory "/var/glf/glf/html">
+		Require all granted
+		Options +Indexes +FollowSymLinks +ExecCGI
+		AllowOverride AuthConfig FileInfo
+		Order allow,deny
+		Allow from all
+	</Directory>
+</VirtualHost>
