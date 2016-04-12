@@ -184,6 +184,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser('Downloads image from reddit matching the given criteria.',formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-v',dest='verbose',action='store_true',help='Verbose output')
+    parser.add_argument('--log',dest='log',metavar='LOG_FILE',default=None,help='Log file')
     parser.add_argument('--luma','-l',dest='luma',type=float,default=90.0,help='Maximum average luma of the image')
     parser.add_argument('--size','-s',dest='size',metavar="WxH",default="1920x1080",help='Minimum size of the image')
     parser.add_argument('--aspect_ratio','-a',dest='aspect_ratio',metavar="W:H",default="2:1",help='Maximum aspect ratio')
@@ -197,6 +198,13 @@ if __name__ == "__main__":
 
     if args.verbose:
         screen_handler.setLevel(logging.DEBUG)
+        LOG.setLevel(logging.DEBUG)
+
+    if args.log!=None:
+        file_handler=logging.FileHandler(args.log)
+        file_handler.setFormatter(formatter)
+        file_handler.setLevel(logging.DEBUG)
+        LOG.addHandler(file_handler)
         LOG.setLevel(logging.DEBUG)
 
 # Select the image
