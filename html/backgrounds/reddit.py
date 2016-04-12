@@ -219,7 +219,7 @@ if __name__ == "__main__":
     filename=time.strftime(args.file,time.gmtime())
     dirname=os.path.dirname(filename)
     LOG.debug('Filname is %s',filename)
-    if not dirname=='' or os.path.isdir(dirname):
+    if not (dirname=='' or os.path.exists(dirname)):
         LOG.debug('Creating directory %s',dirname)
         os.makedirs(dirname)
 
