@@ -1,6 +1,6 @@
 <VirtualHost *:80>
 	ServerName therealglf.org
-	DocumentRoot /var/glf/html
+	DocumentRoot /var/glf/glf/html
 
 	ErrorLog ${APACHE_LOG_DIR}/glf-error.log
 
@@ -9,7 +9,7 @@
 	LogLevel debug
 
 	CustomLog ${APACHE_LOG_DIR}/glf-access.log combined
-	<Directory "/var/glf/html">
+	<Directory "/var/glf/glf/html">
 		Require all granted
 		Options +Indexes +FollowSymLinks +ExecCGI
 		AllowOverride AuthConfig FileInfo
