@@ -1,0 +1,5 @@
+*.jpg
+*.js
+*.css
+!template.css
+reddit.log
