@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Robert I. Petersen : Projects</title>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,400italic,300italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+	<link href='projects.css' rel='stylesheet' type='text/css'>
+	<script src="/script/util.js"></script>
+	<script src="projects.js"></script>
+</head>
+<body>
+<p id="intro">
+Here are a few projects I have written.  
+The impetus for most of these was to provide a learning environment,  
+a place where I could tinker or experiment with a particular technology.
+Other were built as teaching tools for others.
+To find out more click the thumbnail image, to launch the app click the link image, to look at the code or fork the repository clicnk the GitHub cat.
+</p>
+
+<div class="row center">
+	<div id="frequency-generator" class="thumbnail center">
+		Frequency Generator
+		<img class="thumbnail" src="frequency-generator.png"/>
+		<a href="/frequency-generator" target="_blank" class="svg"><object data="/images/link.svg" class="inline link" type="image/svg+xml"></object></a>
+		<a href="https://github.com/geodynamics-liberation-front/frequency-generator" target="_blank" class="svg"><object data="/images/github-mark.svg" class="inline link" type="image/svg+xml"></object></a>
+		<div class="description">
+	<p>
+I developed the frequency generator as part of the <a href="https://earthref.org/SCC/" target="_blank">Scripps Classroom Connection</a>, a fellowship program that pairs graduate students and middle school teachers in developing science curriculum.
+The app generates one or morea sinusoidal waves at frequencies 100 Hz - 1000Hz.
+The tone is made audiamle audible using <a href="https://www.w3.org/TR/webaudio/" target="_blank">HTML 5 Web Audio API</a>.
+	</p>
+	<p>
+Audio is turned on or off using the mute button 
+<object data="/frequency-generator/volume.svg" class="inline" type="image/svg+xml"></object>
+.
+The physical nature of sound, that is a pressure wave that compresses air, can be demonstrated by turning on &quot;air particles&quot; with the particle button 
+<object data="/frequency-generator/particles.svg" class="inline" type="image/svg+xml"></object>
+.
+Single channel or multi-channel mode is selected by clicking the multi-channel button 
+<object data="/frequency-generator/multichannel.svg" class="inline" type="image/svg+xml"></object>
+.
+In multi-channel mode, additional channels can be added using the add channel button 
+<object data="/frequency-generator/add_channel.svg" class="inline" type="image/svg+xml"></object> 
+.
+The Display Width slider changes the x-axis extent from 0.5 m to 200 m.
+The wave speed is 343.2 m/s, the spped of sounds in dry 20 &deg;C air.
+The frequency and amplitude sliders change the pitch and volume of the tone.
+In multi-channel mode the channels are summed together to form a resultant wave that is displayed at the top.
+The phase slider, displayed in mult-channel mode, changes the phase of that channel.
+	</p>
+<h2>Activities</h2>
+	<p>
+<strong>NOTE:</strong> Be careful to keep the volume of you computer low during these activities.  
+Listening at high volume or for extended periods of time may cause hearing dammage.
+	</p>
+<h3>Beats</h3>
+	<p>
+<ol start="0">
+	<li>
+Start with the frequency generator in its initial state, either open a new window or referesh (ctrl-F5) your borwser.
+	</li>
+	<li>
+Set the frequency generator to &quot;multi-channel&quot; mode by clicking the 
+<object data="/frequency-generator/multichannel.svg" class="inline" type="image/svg+xml"></object>
+button.  
+	</li>
+	<li>
+Add a second channel by clicking the 
+<object data="/frequency-generator/add_channel.svg" class="inline" type="image/svg+xml"></object> 
+button.
+	</li>
+	<li>
+Using the frequency slider or by clicking on the frequency value:
+		<ol>
+			<li>
+Set the frequency of the first channel to 440 Hz. This is the default so it should already be set to that value.
+			</li>
+			<li>
+Set the frequency of the second channel to 450 Hz.
+			</li>
+		</ol>
+	</li>
+	<li>
+Unmute the frequency generator, if it isn't already, using the 
+<object data="/frequency-generator/volume.svg" class="inline" type="image/svg+xml"></object>
+button.
+	</li>
+</ol>
+	<p>
+You will hear a 440 Hz tone and you will hear a &quot;beat&quote; at 10 Hz.
+With the display width a 2 m, the three graphs look identical.
+Increase the display width to 100 m.
+Now you see the beat visualized in top (master) graph.
+Mute and unmute the second channel using the 
+<object data="/frequency-generator/volume.svg" class="inline" type="image/svg+xml"></object>
+button above the thrid graph and to the right of the "Channel 2" label.
+Notice how the maste graph and the sound changes as you do.
+	</p>	
+	<p>
+The beat is caused by the interference of the two waves.  
+Because the frequencies are close, but not exactly the same, the sounds they generate changes in volume over time.
+This change in volume is what you see in the master graph.
+The frequency of the beat is the difference between the two waves, or in this case 10 Hz.
+	</p>
+	<p>
+<ul>
+	<li>
+What happens if you add a third channel and set its frequency close to the other two?<br/>
+	</li>
+	<li>
+How many channels can you add and still distinguish the different beats?<br/>
+	</li>
+	<li>
+What happens to the frequency of the beats as you change the frequency of one of the waves?<br/>
+	</li>
+	<li>
+Do you still notice the beats when the difference in frequency is very large? or very small?<br/>
+	</li>
+	</p>
+<!-- <a href="https://www.youtube.com/watch?v=7s21VqEajVw">Rubens Tube</a> -->
+		</div>
+	</div>
+	<div id="orbits" class="thumbnail center">
+		Orbits
+		<img class="thumbnail" src="orbits.png"/>
+		<a href="/orbits" target="_blank" class="svg"><object data="/images/link.svg" class="inline link" type="image/svg+xml"></object></a>
+		<a href="https://github.com/geodynamics-liberation-front/orbits" target="_blank" class="svg"><object data="/images/github-mark.svg" class="inline link" type="image/svg+xml"></object></a>
+		<div class="description">
+<p>
+This project was inspired by a 
+<a href="https://www.reddit.com/r/space/comments/3dpp0v/8_earth_years_are_roughly_equal_to_13_venus_years/" target="_blank">reddit post</a> by 
+<a href="https://www.reddit.com/user/iBleeedorange" target="_blank">iBleedorange</a>.
+I thought the GIF posted was mezmorizing.  
+I also wanted to change several of the parameters of the animation, so I made this interactive version.  
+</p>
+<p>
+Clicking the &quot;hamburger menu&quot; 
+<object data="/orbits/settings.svg" class="inline" type="image/svg+xml"></object>
+makes the settings visibile. 
+</p>
+<p>
+There are a few changes to the original animation that I have made in my version.
+Firstly this one is more colorful.  
+Each orbiting satelite has a customizable color and the line connecting two satelites fades from one color to the other.
+A number of satelite parameters can be changed: their number, color, and the orbital distance can all be set.  
+The animation can be paused and the number of lines and the way they are drawn can likewise be customized.
+</p>
+<p>
+I think the overall effect is quite beautiful and renders some really pleasing images which remind me a lot of <a href="https://www.google.com/search?q=string+art&tbm=isch" target="_blank">string art</a>.
+<p>
+		</div>
+	</div>
+</div>
+<div class="row center">
+	<div is="l.e.m." class="thumbnail center">
+		Lunar Excursion Module (L.E.M.)
+		<img class="thumbnail" src="l.e.m.png"/>
+		<a href="/l.e.m." target="_blank" class="svg"><object data="/images/link.svg" class="inline link" type="image/svg+xml"></object></a>
+		<a href="https://github.com/geodynamics-liberation-front/l.e.m." target="_blank" class="svg"><object data="/images/github-mark.svg" class="inline link" type="image/svg+xml"></object></a>
+		<div class="description">	
+<p>
+The Lunar Excursion Module game is a clasic and one I first wrote in BASIC as a kid.
+The concept is simple, using horizontal and vertical thrusters the player guides the LEM down to its landing pad.
+The challange is to land softly, on target, and not expend all your fuel.
+Failure to do so could lead to disastrous results.
+Left, right and down arrow keys fire the thrusters or on mobile platforms touching to the left, right, and below the LEM does the same.
+With an &quot;old school&quot; video game feel and a vector graphics style interface this game a true clasic brought to modern hardware.
+</p>
+<p>
+The app uses <a href="https://dvcs.w3.org/hg/webevents/raw-file/tip/touchevents.html" target="_blank">HTML5 Touch API</a> so that multiple thrusters can fire at the same time on mobile devices.
+The game is rendered on multiple canvas elements to, maximize the efficiency of painting.
+The <code>visibilitychange</code> event is triggered when the player switches tabs in the browser and the game is paused.
+LEM is a good platform for exploring game physics including gravity and <a href="https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection" target="_blank">colision detection</a>
+</p>
+		</div>
+	</div>
+	<div id="maze" class="thumbnail center">
+		JavaScript Turtle
+		<img class="thumbnail" src="js-turtle.png"/>
+		<a href="/js-turtle" target="_blank" class="svg"><object data="/images/link.svg" class="inline link" type="image/svg+xml"></object></a>
+		<a href="https://github.com/geodynamics-liberation-front/js-turtle" target="_blank" class="svg"><object data="/images/github-mark.svg" class="inline link" type="image/svg+xml"></object></a>
+		<div class="description">
+<p>
+<a href="https://en.wikipedia.org/wiki/Logo_(programming_language)">Logo</a> is a education language based around the use of <a href="https://en.wikipedia.org/wiki/Turtle_graphics" target="_blank">Turtle graphics</a>.
+Unlike a cartisian coordinate drawing system where, for example, one might draw a line from the xy coordinate (0,0) to (10,10), Turtle graphics uses the construct of a &quot;turtle&quot; walking on the drawing surface dragging a pen.
+Drawing is accomplished by instructing the trutle to move forward so many spaces, or turn some number of degrees, repeatedly.
+The turtle has an orientation, a location, and a pen which is either down (drawing) or up (not drawing).
+The programing language Logo is akin to the <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)" target="_blank">Lisp</a> programing language.
+</p>
+<p>
+In this implementation of Turtle graphics the programing language used is JavaScript.
+This design decision was based on the idea that learning the syntax of JavaScript would be more useful than learing the syntax of Lisp, and the fact that browsers come with a JavaScript execution environment.
+</p>
+<p>
+The layout of the page is minimalistic.
+At the top of the screen are three links that &quot;load&quot; local scripts into the browser, &quot;save&quot; scripts to the local machine and an &quot;editor&quot; link that toggles between a single command line and a multi-line editor.
+Below the links is either the command history window and command line (in command line mode) or the mult-line editor.
+Next is the status line showing the location and orientation of the turtle, the pen status (up or down), and the zoom level.
+Finally is the turtle canvas.
+The turtle is an isosceles triangle where the vertex oposite the base points in the direction the turtle is oriented.
+0&deg; points to the left, 90&deg; up, 180&deg; to the right, and 270&deg; down.
+The drawing surface uses a cartisian coordinate system, the origin is located in the center, x values increase to the left, and y values increase upward.
+</p>
+<p>
+The number of predefined commands and variables is small.
+The functionality is intentionally limited.
+Complex functionality is built upon simple functionality.
+</p>
+<p>
+The following functions are available:<br/>
+<code>forward(steps)</code>: Moves the turtle forward <code>steps</code> pixels.<br/>
+<code>left(deg)</code>: Rotates the turtle <code>deg</code> degrees counter-clockwise.<br/>
+<code>pen_up()</code>: Lifts the pen up, disabling drawing when the trutle moves.<br/>
+<code>pen_down()</code>: Lowers the pen, enabling drawing when the trutle moves.<br/>
+<code>undo()</code>: Undoes the last command.<br/>
+<code>save()</code>: Displays the all command history so it can be copied and saved.<br/>
+<code>load()</code>: Reads a local file and executes the commands therein.<br/>
+</p>
+<p>
+<code>x</code>: The horizontal coordinate of the turtle.<br/>
+<code>y</code>: The vertical coordinate of the turtle.<br/>
+<code>theta</code>: The orientation of the turtle.<br/>
+<code>pen</code>: The up/down state of the pen. <code>true</code> means the pen is down, <code>false</code> up.
+</p>
+<p>
+Functionality is added by creating new functions.  
+Initially the turtle has a command to turn <code>left</code>.
+To add the ability to turn right, a new function must be written.  The function <code>left</code> simply adds the given parameter to <code>theta</code>.  Turning right can be accomplished by passing a negative value to <code>left</code>.  The command <code>right</code> can be writen thus:<br>
+<code> function right(d) { left(-d); }</code>
+All the constructs of JavaScript, such as looping and branching, are available.
+</p>
+<p>
+The history of commands and newly defined functions is saved using <a href="https://www.w3.org/TR/webstorage/">HTML5 Web Storage</a>.
+</p>
+		</div>
+	</div>
+</div>
+<div class="row center">
+	<div id="maze" class="thumbnail center">
+		Maze
+		<img class="thumbnail" src="maze.png"/>
+		<a href="/maze" target="_blank" class="svg"><object data="/images/link.svg" class="inline link" type="image/svg+xml"></object></a>
+		<a href="https://github.com/geodynamics-liberation-front/maze" target="_blank" class="svg"><object data="/images/github-mark.svg" class="inline link" type="image/svg+xml"></object></a>
+		<div class="description">
+<p>
+Visualizations of algorithms are fun to watch, and provide a context for understanding the algorithm that a textual description doesn't.
+<a href="https://www.toptal.com/developers/sorting-algorithms" target="_blank">Sorting algorithms</a> are an often used source for these visualizations.
+I thought that an obvious choice of a graphical representation of an algorithm is an algorithm that is designed to generate a visual object.
+In the Maze app a <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm#Recursive_backtracker" target="_blank">recursive backtracker</a> algorithm is used to generate a maze.
+</p>
+<p>
+I've used this algorithm to make both visual and non-visual mazes for dungeon style games.
+Not only is this app fun to watch and educational, but when it's done you have a fun maze to play.
+Before a long trip I like to generate and print out several.
+</p>
+		</div>
+	</div>
+	<div id="code-breaker" class="thumbnail center">
+		Code Breaker
+		<img class="thumbnail" src="code-breaker.png"/>
+		<a href="/code-breaker" target="_blank" class="svg"><object data="/images/link.svg" class="inline link" type="image/svg+xml"></object></a>
+		<a href="https://github.com/geodynamics-liberation-front/code-breaker" target="_blank" class="svg"><object data="/images/github-mark.svg" class="inline link" type="image/svg+xml"></object></a>
+		<div class="description">
+		<p>
+Code Breaker is an implementation of a code breaking game where the player trys to guess a 4 digit sequence of numbers from 0 to 5.  
+You may know the pencil and paper version called <a href="https://en.wikipedia.org/wiki/Bulls_and_Cows" target="_blank">Bulls &amp; Cows</a> or the board game <a href="https://en.wikipedia.org/wiki/Mastermind_(board_game)" target="_blank">Mastermind</a>.
+		</p>
+		<p>
+This browser-based version features a clean minimal interface.
+Simple guess 4 numbers and page responds with a code indicating how close your guess was to correct.
+Every &quot;0&wuot; indicates that you have one digit correct but in the wrong location.
+Every &quot;1&wuot; indicates that you have one digit correct and in the correct location.
+Challange yourself to how quickly you break the code.
+		</p>
+		</div>
+	</div>
+</div>
+<div style="height: 100vh"></div>
+<script>
+document.addEventListener("DOMContentLoaded", init)
+</script>
+</body>

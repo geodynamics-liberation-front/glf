@@ -1,8 +1,8 @@
 /*
  * sprintf.js
  */
-
-(function(window) {
+;
+(function(win) {
     var re = {
         not_string: /[^s]/,
         number: /[def]/,
@@ -57,9 +57,8 @@
                     throw new TypeError(sprintf("[sprintf] expecting number but found %s", get_type(arg)))
                 }
 
-                if (re.number.test(match[9])) {
-                    is_positive = arg >= 0
-                }
+				sign=""
+				is_positive = re.number.test(match[9]) ? arg >= 0 : true
 
                 switch (match[9]) {
                     case "b":
@@ -191,8 +190,8 @@
         exports.vsprintf = vsprintf
     }
     else {
-        window.sprintf = sprintf
-        window.vsprintf = vsprintf
+        win.sprintf = sprintf
+        win.vsprintf = vsprintf
 
         if (typeof define === "function" && define.amd) {
             define(function() {

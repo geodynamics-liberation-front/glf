@@ -202,6 +202,8 @@ footer {
 </style>
 <script src="script/sprintf.js"></script>
 <script>
+// Picture Of the Day
+// Set the background to an image loaded from /r/earthpron
 var pod_date=new Date()
 pod_date.setUTCMilliseconds(0)
 pod_date.setUTCSeconds(0)
@@ -210,8 +212,8 @@ pod_date.setUTCHours(0)
 pod_date=new Date(pod_date.getTime()-24*60*60*1000)
 
 var image_info
-
 var timeout_id
+
 function check_top()
 {
 	if($(".fade-in").position().top-$(window).scrollTop()<$(window).height()) 

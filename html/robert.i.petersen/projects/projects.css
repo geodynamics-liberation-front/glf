@@ -1,0 +1,140 @@
+* {
+	margin:0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Roboto, sans-serif;
+	font-size: 14pt;
+	font-weight: 300;
+	background: #111111;
+	color: #cccccc;
+	padding: 10px;
+}
+
+a {
+	color: #cccccc;
+	text-decoration: dashed;
+}
+
+
+p {
+	margin-bottom: 14pt;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+	text-align: center;
+}
+
+#intro {
+	width: 70%;
+	min-width: 250px;
+	margin: 20px auto 20px auto;
+}
+
+img.thumbnail {
+	width: 240px;
+    margin-left: auto;
+    margin-right: auto;
+	display: block;
+}
+
+object.inline {
+	height: 14pt;
+	vertical-align: sub;
+}
+
+.row {
+	margin-bottom: 20px;
+}
+
+.thumbnail {
+	width: 250px;
+	display: inline-block;
+	margin: 5px;
+}
+
+.selected {
+	width: 100%;
+}
+
+
+.description {
+	text-align: left;
+	height: 0;
+	width: 0;
+    text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+/* 
+These settings are required because if I used 
+display: none -> display: block, 
+the <objects>, would reload
+*/
+    max-height: 0;
+    max-width: 0%;
+    float: left;
+    overflow: hidden;
+}
+
+.selected .description {
+	display: block;
+	padding-left: 20px;
+	padding-right: 20px;
+	height: auto;
+	width: auto;
+	max-height: 1000px;
+	max-width: 100%;
+}
+
+
+.keywords {
+}
+
+/* Make svg objects clickable */
+a.svg {
+  position: relative;
+  display: inline-block;
+}
+a.svg:after {
+  content: ""; 
+  position: absolute; 
+  top: 0; 
+  right: 0; 
+  bottom: 0; 
+  left: 0;
+}
+
+ul > li {
+	margin-left: 1em;
+
+}
+ol {
+	list-style-type: none;
+	counter-reset: item;
+	margin: 0;
+	padding: 0;
+}
+
+ol > li {
+	display: table;
+	counter-increment: item;
+	margin-bottom: 0.6em;
+}
+
+ol > li:before {
+	content: counters(item, ".") ". ";
+	display: table-cell;
+	padding-right: 0.6em;    
+}
+
+li ol > li {
+	margin: 0;
+}
+
+li ol > li:before {
+	content: counters(item, ".") " ";
+}
