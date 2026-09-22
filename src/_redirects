@@ -1,0 +1,4 @@
+# One canonical host.
+https://www.therealglf.org/* https://therealglf.org/:splat 301
+https://therealglf.com/* https://therealglf.org/:splat 301
+https://www.therealglf.com/* https://therealglf.org/:splat 301

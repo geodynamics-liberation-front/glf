@@ -8,7 +8,8 @@
     "build:site": "node scripts/build.mjs --no-projects",
     "serve": "python3 -m http.server 8080 --directory dist",
     "clean": "rm -rf dist",
-    "background": "node backgrounds/fetch.mjs"
+    "background": "node backgrounds/fetch.mjs",
+    "deploy": "npx wrangler@4 pages deploy dist --project-name=glf --branch=main --commit-dirty=true"
   },
   "dependencies": {
     "playwright": "^1.62.1"

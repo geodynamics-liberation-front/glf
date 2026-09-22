@@ -13,7 +13,7 @@ src/assets/            stylesheet, catalog filter script, favicon
 backgrounds/           daily background picture fetcher (see below)
 scripts/build.mjs      the build: fetch every project, build it, assemble dist/
 scripts/lib/           template helper and the magnetic-stripes hero
-.github/workflows/     builds and deploys to GitHub Pages
+.github/workflows/     builds and deploys to Cloudflare Pages
 build/                 checkouts and state, not in git
 dist/                  the finished site, not in git
 ```
@@ -83,12 +83,49 @@ which is then built in place instead of a fresh checkout:
 The catalog marks such entries as a local copy. Delete the file, or the entry,
 to go back to building from the repository.
 
-## Deploying
+## Hosting
 
-`.github/workflows/publish.yml` builds the site and deploys it to GitHub Pages
-on every push to `main`, once a day, and on demand from the Actions tab, so the
-live site tracks the projects' main branches. To turn it on, set the
-repository's Pages source to "GitHub Actions" under Settings, Pages.
+The site is served by Cloudflare Pages at https://therealglf.org, with DNS on
+Cloudflare and the domain registered at Namecheap. Cloudflare provides the
+certificate (Universal SSL) at no cost and renews it.
+
+### One-time setup
+
+1. Sign in at dash.cloudflare.com and add the site `therealglf.org` on the
+   Free plan. Cloudflare scans the existing records and shows two nameservers.
+2. At Namecheap, open Domain List, Manage, Nameservers, choose Custom DNS and
+   enter the two Cloudflare nameservers. Propagation takes minutes to a few
+   hours; Cloudflare emails when the zone is active.
+3. Create the Pages project and make the first deployment from this machine:
+
+       npx wrangler@4 login
+       npx wrangler@4 pages project create glf --production-branch=main
+       npm run build && npm run deploy
+
+   The site is now at https://glf.pages.dev.
+4. In the Pages project, open Custom domains and add `therealglf.org` and
+   `www.therealglf.org`. Cloudflare creates the DNS records itself when the
+   zone is on Cloudflare; delete the old A record for the university host if
+   the scan imported it. Do the same for `therealglf.com` if that domain is
+   kept.
+5. Under SSL/TLS for the zone, leave the mode on Full (strict) and turn on
+   Always Use HTTPS. `src/_redirects` sends the www and .com hosts to the
+   canonical https://therealglf.org.
+
+### Automatic deployments
+
+`.github/workflows/publish.yml` builds the site and deploys it with wrangler on
+every push, once a day, and on demand. It needs two repository secrets under
+Settings, Secrets and variables, Actions:
+
+| secret | value |
+| --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | shown on the right of the zone's Overview page |
+| `CLOUDFLARE_API_TOKEN` | a token made at My Profile, API Tokens, with the "Cloudflare Pages: Edit" permission for the account |
+
+`src/_headers` sets caching (project data files are versioned by query string
+and cached for a year) and `src/_redirects` the host redirects; the build copies
+both to `dist/`.
 
 ## Daily background picture
 
