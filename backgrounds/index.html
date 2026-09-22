@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Today's background</title>
+<link rel="stylesheet" href="latest.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { min-height: 100vh; }
+  body { font-family: sans-serif; color: #fff; }
+  .picture { position: fixed; inset: 0; z-index: -1; background: url(latest.jpg) center / cover no-repeat; }
+  .credit { position: fixed; left: 0; right: 0; bottom: 0; padding: 0.8rem 1.2rem; background: rgba(0, 0, 0, 0.55); font-size: 0.95rem; line-height: 1.4; }
+  .credit a { color: #fff; }
+</style>
+</head>
+<body>
+<div class="picture"></div>
+<p class="credit" id="credit">Run <code>npm run background</code> to fetch today's picture.</p>
+<script>
+  // latest.css sets the page background to the picture's average colour, so the
+  // colour shows while the picture loads. latest.json names the post for credit.
+  fetch('latest.json').then(r => r.json()).then(d => {
+    const c = document.getElementById('credit');
+    c.textContent = '';
+    const a = document.createElement('a');
+    a.href = d.post.permalink; a.textContent = d.post.title;
+    c.append(a, ` by u/${d.post.author}, ${d.image.width} × ${d.image.height}`);
+  }).catch(() => {});
+</script>
+</body>
+</html>

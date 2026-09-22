@@ -1,0 +1,10 @@
+/* Written out with each background. The placeholders color, luma, width,
+   height, title and author (each prefixed with a dollar sign) are filled in
+   from the chosen picture. */
+body {
+	background: $color;
+}
+
+.menu {
+	border-bottom: 2px solid $color;
+}

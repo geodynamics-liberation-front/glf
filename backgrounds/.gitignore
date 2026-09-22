@@ -1,0 +1,11 @@
+# Downloaded backgrounds and the files generated with them
+*.jpg
+*.js
+*.json
+*.css
+!template.css
+latest.*
+reddit.log
+
+# Browser profile used by fetch.mjs
+.profile/

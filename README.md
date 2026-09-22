@@ -1,15 +1,16 @@
-# Geodynamics Liberation Front website
+# Geodynamics Liberation Front
 
 The public site for the Geodynamics Liberation Front: an intro page, an about
 page, and a tagged catalog of published projects. Each published project lives
-in its own repository; this repository only holds the site and the list of what
-to publish.
+in its own repository; this repository holds the site, the list of what to
+publish, and a few small tools (see `backgrounds/`).
 
 ```
 projects.json          the site settings and the list of published projects
 src/pages/             page templates (index, about, projects)
 src/partials/          head, nav and footer shared by the pages
 src/assets/            stylesheet, catalog filter script, favicon
+backgrounds/           daily background picture fetcher (see below)
 scripts/build.mjs      the build: fetch every project, build it, assemble dist/
 scripts/lib/           template helper and the magnetic-stripes hero
 .github/workflows/     builds and deploys to GitHub Pages
@@ -88,3 +89,27 @@ to go back to building from the repository.
 on every push to `main`, once a day, and on demand from the Actions tab, so the
 live site tracks the projects' main branches. To turn it on, set the
 repository's Pages source to "GitHub Actions" under Settings, Pages.
+
+## Daily background picture
+
+`backgrounds/fetch.mjs` picks a picture from a subreddit (r/EarthPorn by
+default) for use as a page background. It loads the listing in headless
+Chromium through Playwright rather than the Reddit API, downloads the image
+posts in order, and keeps the first one that is at least 1920 by 1080, no wider
+than 2:1, and dark enough on average for text to sit on. It writes the picture,
+a stylesheet made from `backgrounds/template.css` with the picture's average
+colour filled in, and a JSON file with the post's details, all named by the
+date, plus `latest.*` copies. `backgrounds/index.html` shows the result.
+
+```
+npm install                          # playwright
+npx playwright install chromium      # once, if no Chromium is cached
+npm run background                   # into backgrounds/
+node backgrounds/fetch.mjs --help    # all options: --subreddit --sort --size --aspect --luma --out --name
+```
+
+To fetch one a day, run it from cron, for example at 06:15:
+
+```
+15 6 * * * cd /path/to/glf && node backgrounds/fetch.mjs --out=/var/www/backgrounds >> backgrounds/fetch.log 2>&1
+```
