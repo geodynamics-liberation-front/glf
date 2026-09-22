@@ -18,8 +18,10 @@
 //
 // Needs the playwright package and a Chromium (npx playwright install chromium).
 // The browser profile is kept in backgrounds/.profile (ignored by git) so reddit
-// sees the same returning browser each day. If the page is blocked, the public
-// RSS feed of the subreddit is used instead.
+// sees the same returning browser each day. Chromium's headless user agent is
+// replaced by the ordinary Chrome one, since reddit blocks headless browsers on
+// sight. If the page is still blocked, the public RSS feed of the subreddit is
+// used instead.
 
 import { chromium } from 'playwright';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -202,7 +204,18 @@ const hex = v => Math.round(v).toString(16).padStart(2, '0');
 const PROFILE = join(HERE, '.profile');
 mkdirSync(PROFILE, { recursive: true });
 const launchArgs = process.env.GLF_NO_SANDBOX ? ['--no-sandbox'] : []; // some containers cannot run Chromium's sandbox
-const context = await chromium.launchPersistentContext(PROFILE, { headless: true, viewport: { width: 1440, height: 900 }, args: launchArgs });
+const launchOpts = { headless: true, viewport: { width: 1440, height: 900 }, args: launchArgs };
+let context = await chromium.launchPersistentContext(PROFILE, launchOpts);
+// Headless Chromium announces itself as "HeadlessChrome/151.0.7922.34", which
+// reddit blocks outright. Relaunch as the same version of ordinary Chrome; the
+// context's request client (used for the RSS feed) sends the same user agent.
+const headlessUA = await context.pages()[0].evaluate(() => navigator.userAgent);
+if (/HeadlessChrome/.test(headlessUA)) {
+  await context.close();
+  launchOpts.userAgent = headlessUA.replace('HeadlessChrome', 'Chrome');
+  debug(`user agent: ${launchOpts.userAgent}`);
+  context = await chromium.launchPersistentContext(PROFILE, launchOpts);
+}
 try {
   const page = context.pages()[0] ?? await context.newPage();
   const posts = await listPosts(page, context, opts.subreddit, opts.sort, limit);
