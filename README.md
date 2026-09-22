@@ -108,9 +108,10 @@ certificate (Universal SSL) at no cost and renews it.
    zone is on Cloudflare; delete the old A record for the university host if
    the scan imported it. Do the same for `therealglf.com` if that domain is
    kept.
-5. Under SSL/TLS for the zone, leave the mode on Full (strict) and turn on
-   Always Use HTTPS. `src/_redirects` sends the www and .com hosts to the
-   canonical https://therealglf.org.
+5. Pages serves both hostnames over HTTPS and redirects plain HTTP itself.
+   To send www (or the .com domain) to the canonical https://therealglf.org,
+   add a Redirect Rule for the zone under Rules; a Pages `_redirects` file
+   cannot match hostnames.
 
 ### Automatic deployments
 
@@ -124,8 +125,7 @@ Settings, Secrets and variables, Actions:
 | `CLOUDFLARE_API_TOKEN` | a token made at My Profile, API Tokens, with the "Cloudflare Pages: Edit" permission for the account |
 
 `src/_headers` sets caching (project data files are versioned by query string
-and cached for a year) and `src/_redirects` the host redirects; the build copies
-both to `dist/`.
+and cached for a year); the build copies it to `dist/`.
 
 ## Daily background picture
 

@@ -192,7 +192,7 @@ function buildSite(built) {
   }
   rmSync(join(DIST, 'assets'), { recursive: true, force: true });
   cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
-  for (const f of ['_headers', '_redirects']) if (existsSync(join(SRC, f))) cpSync(join(SRC, f), join(DIST, f));
+  if (existsSync(join(SRC, '_headers'))) cpSync(join(SRC, '_headers'), join(DIST, '_headers'));
   writeFileSync(join(DIST, 'projects.json'), JSON.stringify({ generated: new Date().toISOString(), projects }, null, 2));
   log(`site: ${Object.keys(pages).length} pages, ${projects.length} projects, ${tags.length} tags`);
 }
