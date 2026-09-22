@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{> head}}
+<title>Geodynamics Liberation Front</title>
+<meta name="description" content="Small tools, games and printed things for seeing how the Earth works. Nominally geophysics. Tech, education and science projects from the Geodynamics Liberation Front.">
+</head>
+<body class="home">
+{{> nav}}
+<main>
+  <section class="hero">
+    <div class="hero-stripes" title="Sea-floor magnetic polarity, mirrored about a spreading ridge: the last 5.3 million years of the Earth's field flipping">{{stripes}}</div>
+    <h1 class="hero-title">Geodynamics<br>Liberation<br>Front</h1>
+    <p class="hero-lead">Small tools, games and printed things for seeing how the Earth works. Nominally about geophysics. In practice, about whatever we are curious enough to build.</p>
+    <p class="hero-note">The stripes above are real: the record of the Earth's magnetic field reversing over the last 5.3 million years, frozen into the sea floor as it spreads away from a ridge. Every project here is like that. Something you can look at, and something you can check.</p>
+  </section>
+
+  <section class="latest">
+    <div class="section-head">
+      <h2>Latest projects</h2>
+      <a class="section-more" href="/projects/">All {{projectCount}} projects</a>
+    </div>
+    <ul class="entries">
+{{latestEntries}}
+    </ul>
+  </section>
+
+  <section class="creed">
+    <h2>What we make</h2>
+    <div class="creed-cols">
+      <p>Interactive pages that answer one question well: what is across the ocean from here, what two sound waves do when they meet, where a plate boundary runs.</p>
+      <p>Printable things for classrooms and kitchen tables. Passports, charts, cut-and-fold models, with the data and the code that made them.</p>
+      <p>Code for anyone to read. Every project is a public repository on GitHub, and this site rebuilds itself from the latest version of each one.</p>
+    </div>
+  </section>
+</main>
+{{> footer}}
+</body>
+</html>

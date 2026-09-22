@@ -1,0 +1,33 @@
+{
+  "site": {
+    "title": "Geodynamics Liberation Front",
+    "url": "https://geodynamics-liberation-front.github.io",
+    "github": "https://github.com/geodynamics-liberation-front",
+    "social": [
+      { "name": "GitHub", "url": "https://github.com/geodynamics-liberation-front" },
+      { "name": "Facebook", "url": "https://www.facebook.com/GeodynamicsLiberationFront/" }
+    ]
+  },
+  "projects": [
+    {
+      "slug": "across-the-ocean",
+      "name": "Across the Ocean",
+      "summary": "Stand on any shore, look straight out to sea, and find the first coast you would reach. A great-circle answer, not a line-of-latitude one.",
+      "repo": "https://github.com/geodynamics-liberation-front/across-the-ocean",
+      "tags": ["geography", "maps", "interactive"],
+      "build": ["make data"],
+      "publish": "site",
+      "added": "2026-09-21"
+    },
+    {
+      "slug": "frequency-generator",
+      "name": "Frequency Generator",
+      "summary": "Build a sound from sine waves, watch them add up on screen, and hear them cancel. Interference you can listen to.",
+      "repo": "https://github.com/geodynamics-liberation-front/frequency-generator",
+      "tags": ["physics", "sound", "waves", "interactive"],
+      "build": [],
+      "publish": "html",
+      "added": "2026-09-21"
+    }
+  ]
+}

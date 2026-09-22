@@ -1,0 +1,9 @@
+# Build output and cloned project repositories
+/build/
+/dist/
+
+# Local overrides for previewing unpublished working trees
+/projects.local.json
+
+node_modules/
+.DS_Store
