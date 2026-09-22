@@ -1,0 +1,11 @@
+[Unit]
+Description=Publish therealglf.org every morning
+
+[Timer]
+OnCalendar=*-*-* 06:15:00
+RandomizedDelaySec=15min
+# If the machine was off at 06:15, run as soon as it is back.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

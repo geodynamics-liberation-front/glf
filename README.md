@@ -134,11 +134,19 @@ requests from cloud addresses, so the daily publish runs here too:
 npm run publish        # fetch today's picture (if it can), build, deploy
 ```
 
-A cron entry runs it every morning, for example:
+It is meant to run every morning on a small always-on Debian machine on the
+home network (a Proxmox LXC container), because Reddit blocks cloud addresses.
+`publisher/` has a setup script and a systemd service and timer for that:
 
 ```
-15 6 * * * cd /home/robert/work/glf/glf && npm run publish >> backgrounds/publish.log 2>&1
+apt install -y curl && curl -fsSL https://raw.githubusercontent.com/geodynamics-liberation-front/glf/main/publisher/setup.sh | bash
 ```
+
+Then put a Cloudflare API token (Cloudflare Pages: Edit) in
+`/etc/glf-publish.env` and run `systemctl start glf-publish.service` once to
+check it. The timer runs at 06:15 each day, catches up if the machine was off,
+and logs to `journalctl -u glf-publish`. The service pulls this repository's
+main branch first, so pushed site changes go live with the next run.
 
 The build publishes the newest 30 days of pictures found in `backgrounds/`
 under `/backgrounds/` with an `index.json` the front page reads.

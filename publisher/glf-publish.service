@@ -1,0 +1,19 @@
+# Daily publish of therealglf.org: fetch the picture of the day, build, deploy.
+# Installed by publisher/setup.sh. Logs: journalctl -u glf-publish
+[Unit]
+Description=Publish therealglf.org
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=glf
+WorkingDirectory=/opt/glf
+EnvironmentFile=/etc/glf-publish.env
+Environment=HOME=/home/glf
+# Track the site repository's main branch, then fetch, build and deploy.
+ExecStartPre=/usr/bin/git pull --ff-only --quiet
+ExecStartPre=/usr/bin/npm ci --no-audit --no-fund --silent
+ExecStart=/usr/bin/npm run publish
+TimeoutStartSec=2h
+Nice=10

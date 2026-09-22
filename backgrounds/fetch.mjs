@@ -201,7 +201,8 @@ const hex = v => Math.round(v).toString(16).padStart(2, '0');
 
 const PROFILE = join(HERE, '.profile');
 mkdirSync(PROFILE, { recursive: true });
-const context = await chromium.launchPersistentContext(PROFILE, { headless: true, viewport: { width: 1440, height: 900 } });
+const launchArgs = process.env.GLF_NO_SANDBOX ? ['--no-sandbox'] : []; // some containers cannot run Chromium's sandbox
+const context = await chromium.launchPersistentContext(PROFILE, { headless: true, viewport: { width: 1440, height: 900 }, args: launchArgs });
 try {
   const page = context.pages()[0] ?? await context.newPage();
   const posts = await listPosts(page, context, opts.subreddit, opts.sort, limit);
