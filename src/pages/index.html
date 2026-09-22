@@ -3,37 +3,46 @@
 <head>
 {{> head}}
 <title>Geodynamics Liberation Front</title>
-<meta name="description" content="Small tools, games and printed things for seeing how the Earth works. Nominally geophysics. Tech, education and science projects from the Geodynamics Liberation Front.">
+<meta name="description" content="The Geodynamics Liberation Front: science, technology, engineering, arts and math, taught with the Earth. Projects, tools and a picture of the Earth every day.">
+<link id="background_style" rel="stylesheet">
 </head>
 <body class="home">
 {{> nav}}
-<main>
-  <section class="hero">
-    <div class="hero-stripes" title="Sea-floor magnetic polarity, mirrored about a spreading ridge: the last 5.3 million years of the Earth's field flipping">{{stripes}}</div>
-    <h1 class="hero-title">Geodynamics<br>Liberation<br>Front</h1>
-    <p class="hero-lead">Small tools, games and printed things for seeing how the Earth works. Nominally about geophysics. In practice, about whatever we are curious enough to build.</p>
-    <p class="hero-note">The stripes above are real: the record of the Earth's magnetic field reversing over the last 5.3 million years, frozen into the sea floor as it spreads away from a ridge. Every project here is like that. Something you can look at, and something you can check.</p>
-  </section>
 
-  <section class="latest">
-    <div class="section-head">
-      <h2>Latest projects</h2>
-      <a class="section-more" href="/projects/">All {{projectCount}} projects</a>
-    </div>
-    <ul class="entries">
-{{latestEntries}}
+<div class="bgimage-container">
+  <img id="background_image" class="bgimage" alt="">
+</div>
+
+<div class="center-text-container">
+  <div id="scroll-hint" class="center-text" aria-hidden="true">&#x2935;</div>
+</div>
+
+<div class="text-container">
+  <div class="text-padding"></div>
+  <div class="fade-in"></div>
+  <div class="text-body" id="text-body">
+    <h1 class="wordmark">Geodynamics Liberation Front</h1>
+    <p>
+      The Geodynamics Liberation Front is an outreach organization that exposes students and the general public to scientific concepts, using the Earth and Earth processes as a tool to teach science, technology, engineering, arts and math.
+    </p>
+    <p>
+      Most of what we make is small and open: a web page that answers one question well, a printable thing for a classroom, a program you can read. Every project lives in a public repository, and this site is rebuilt from the latest version of each one.
+    </p>
+    <h2>Latest projects</h2>
+    <ul class="latest">
+{{latestList}}
     </ul>
-  </section>
+    <p class="plain more"><a href="/projects/">all {{projectCount}} projects</a></p>
+  </div>
+  <div class="fade-out"></div>
+  <div class="text-padding"></div>
+</div>
 
-  <section class="creed">
-    <h2>What we make</h2>
-    <div class="creed-cols">
-      <p>Interactive pages that answer one question well: what is across the ocean from here, what two sound waves do when they meet, where a plate boundary runs.</p>
-      <p>Printable things for classrooms and kitchen tables. Passports, charts, cut-and-fold models, with the data and the code that made them.</p>
-      <p>Code for anyone to read. Every project is a public repository on GitHub, and this site rebuilds itself from the latest version of each one.</p>
-    </div>
-  </section>
-</main>
-{{> footer}}
+<footer class="pod is-hidden" id="pod">
+  <button class="info_icon" id="info-icon" type="button" aria-label="About this picture">i</button>
+  <div class="author_info" id="author-info"></div>
+</footer>
+
+<script src="/assets/home.js"></script>
 </body>
 </html>

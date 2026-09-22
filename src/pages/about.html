@@ -3,28 +3,31 @@
 <head>
 {{> head}}
 <title>About the Geodynamics Liberation Front</title>
-<meta name="description" content="Who the Geodynamics Liberation Front is, where to find us, and how this site is built.">
+<meta name="description" content="What the Geodynamics Liberation Front is, where to find it, and how this site is built.">
 </head>
-<body class="about">
+<body class="page about">
 {{> nav}}
-<main class="prose">
+<main>
   <h1>About</h1>
-  <p class="lead">The Geodynamics Liberation Front is a one-desk outfit for tech, education and science projects. The name comes from geophysics, and so do many of the projects. The rest come from wherever curiosity leads.</p>
-
-  <h2>What this is</h2>
-  <p>A catalog of things we have made and think are worth sharing: interactive web pages, printable booklets and charts, and the tools behind them. Each one tries to do a single job well and to show its work. Where a project uses data, the sources are cited and the code that processed them is published with it.</p>
+  <p>
+    The Geodynamics Liberation Front is an outreach organization that exposes students and the general public to scientific concepts, using the Earth and Earth processes as a tool to teach science, technology, engineering, arts and math. The name comes from geophysics, and so do many of the projects. The rest come from wherever curiosity leads.
+  </p>
 
   <h2>Where to find us</h2>
-  <ul class="link-list">
-    <li><a href="{{site.github}}">GitHub</a>. Every project is a public repository under the geodynamics-liberation-front organization. Issues and pull requests are welcome.</li>
-    <li><a href="https://www.facebook.com/GeodynamicsLiberationFront/">Facebook</a>. Announcements and the occasional picture of a rock.</li>
+  <ul class="links">
+    <li><a href="{{site.github}}">GitHub</a>: every project is a public repository under the geodynamics-liberation-front organization. Issues and pull requests are welcome.</li>
+    <li><a href="https://www.facebook.com/GeodynamicsLiberationFront/">Facebook</a>: announcements and the occasional picture of a rock.</li>
   </ul>
 
-  <h2>How this site is built</h2>
-  <p>The site lives in its own repository. A list of published projects names each project's repository. When the site is built, every project is checked out at the tip of its main branch, built with its own build steps, and placed under <span class="path">/projects/</span>. The catalog page records which commit each project was built from, so what you see here is always the most recent published version.</p>
+  <h2>The picture of the day</h2>
+  <p>
+    The photograph behind the front page changes every day. It is chosen from the day's most popular posts on <a href="https://www.reddit.com/r/EarthPorn/">r/EarthPorn</a>, a community of landscape photographers, by a small program that looks for a large, not too wide, and dark enough picture. The photographer is credited in the corner of the front page, with a link to the original post, and the previous days' pictures can be paged through there too.
+  </p>
 
-  <h2>Credits</h2>
-  <p>The stripes on the front page follow the geomagnetic polarity time scale for the last 5.3 million years, drawn symmetrically about a spreading ridge in the manner of Vine and Matthews. Type is set in Bricolage Grotesque and Source Serif 4.</p>
+  <h2>How this site is built</h2>
+  <p>
+    The site lives in its own repository. A list of published projects names each project's repository. When the site is built, every project is checked out at the tip of its main branch, built with its own build steps, and placed under <code>/projects/</code>. The projects page records which commit each was built from, so what you see here is always the most recent published version.
+  </p>
 </main>
 {{> footer}}
 </body>

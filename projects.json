@@ -4,14 +4,8 @@
     "url": "https://therealglf.org",
     "github": "https://github.com/geodynamics-liberation-front",
     "social": [
-      {
-        "name": "GitHub",
-        "url": "https://github.com/geodynamics-liberation-front"
-      },
-      {
-        "name": "Facebook",
-        "url": "https://www.facebook.com/GeodynamicsLiberationFront/"
-      }
+      { "name": "GitHub", "url": "https://github.com/geodynamics-liberation-front" },
+      { "name": "Facebook", "url": "https://www.facebook.com/GeodynamicsLiberationFront/" }
     ]
   },
   "projects": [
@@ -19,15 +13,14 @@
       "slug": "across-the-ocean",
       "name": "Across the Ocean",
       "summary": "Stand on any shore, look straight out to sea, and find the first coast you would reach. A great-circle answer, not a line-of-latitude one.",
+      "description": [
+        "Stand on any shore, look straight out to sea, and this page finds the first coast a great circle meets when it leaves your beach at right angles to the shoreline. Not the country that happens to share your latitude, which is what the popular \"what's across the ocean\" maps show, but where you would actually arrive if you sailed dead ahead.",
+        "Drag the globe to turn it and scroll to zoom. The cursor snaps to the nearest shoreline, and an arrow shows the direction straight out to sea. Press Space to follow that great circle until it meets land. The results panel draws the route on a world map in the projection of your choice and lists the countries, seas and nearest towns along the way, with the line-of-latitude answer beside it for comparison. Results have shareable links.",
+        "Coastlines come from GSHHG, countries and seas from Natural Earth, and towns from GeoNames. The data build and the shoreline format are documented in the repository."
+      ],
       "repo": "https://github.com/geodynamics-liberation-front/across-the-ocean",
-      "tags": [
-        "geography",
-        "maps",
-        "interactive"
-      ],
-      "build": [
-        "make data"
-      ],
+      "tags": ["geography", "maps", "interactive"],
+      "build": ["make data"],
       "publish": "site",
       "added": "2026-09-21"
     },
@@ -35,13 +28,13 @@
       "slug": "frequency-generator",
       "name": "Frequency Generator",
       "summary": "Build a sound from sine waves, watch them add up on screen, and hear them cancel. Interference you can listen to.",
-      "repo": "https://github.com/geodynamics-liberation-front/frequency-generator",
-      "tags": [
-        "physics",
-        "sound",
-        "waves",
-        "interactive"
+      "description": [
+        "The frequency generator was developed as part of the <a href=\"https://earthref.org/SCC/\">Scripps Classroom Connection</a>, a fellowship program that pairs graduate students with middle school teachers to develop science curriculum. It generates one or more sinusoidal waves and makes them audible with the browser's Web Audio API.",
+        "The speaker button turns the sound on and off. The particles button shows the physical nature of sound, a pressure wave compressing air. The multi-channel button switches to several waves at once, each with its own frequency, amplitude and phase, summed into the master wave at the top. The display width slider changes how many metres of the wave are shown, at the speed of sound in dry air at 20 °C, 343.2 m/s.",
+        "Try beats: in multi-channel mode add a second channel, set one to 440 Hz and the other to 450 Hz, and unmute. You will hear a 440 Hz tone pulsing ten times a second. Widen the display to 100 m and the pulsing appears in the master graph. The beat is interference between the two waves, and its frequency is the difference of theirs. Keep the volume low; listening at high volume or for long periods can damage hearing."
       ],
+      "repo": "https://github.com/geodynamics-liberation-front/frequency-generator",
+      "tags": ["physics", "sound", "waves", "interactive"],
       "build": [],
       "publish": "html",
       "added": "2026-09-21"

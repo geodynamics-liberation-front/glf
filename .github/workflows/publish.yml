@@ -3,8 +3,6 @@ name: Publish site
 on:
   push:
     branches: [main, master]
-  schedule:
-    - cron: '17 9 * * *'   # daily, so the site tracks the projects' main branches
   workflow_dispatch:
 
 permissions:

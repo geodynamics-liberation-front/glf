@@ -20,7 +20,6 @@ import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, write
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { esc, render } from './lib/template.mjs';
-import { stripesSVG } from './lib/stripes.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'src');
@@ -150,22 +149,63 @@ function tagList(projects) {
   return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
+// One thumbnail on the projects page: title, picture, link and GitHub icons,
+// tags, and the write-up that opens when the picture is clicked.
 function projectEntry(p) {
   const href = `/projects/${p.slug}/`;
-  const tags = (p.tags || []).map(t => `<a class="tag" href="/projects/#${esc(t)}" data-tag="${esc(t)}">${esc(t)}</a>`).join('');
+  const thumb = existsSync(join(SRC, 'thumbnails', `${p.slug}.png`)) ? `/assets/thumbnails/${p.slug}.png` : '';
+  const tags = (p.tags || []).map(t => `<a href="/projects/#${esc(t)}" data-tag="${esc(t)}">${esc(t)}</a>`).join('');
   const b = p.build;
   const built = b.short
-    ? `<span class="entry-built">${b.local ? 'local copy' : `built from <a href="${esc(p.repo)}/commit/${esc(b.sha)}">${esc(b.short)}</a>`}${b.date ? `, ${esc(b.date.slice(0, 10))}` : ''}</span>`
+    ? `<p class="built">${b.local ? 'Built from a local copy' : `Built from commit <a href="${esc(p.repo)}/commit/${esc(b.sha)}">${esc(b.short)}</a>`}${b.date ? `, ${esc(b.date.slice(0, 10))}` : ''}.</p>`
     : '';
+  const paragraphs = (p.description && p.description.length ? p.description : [esc(p.summary)]).map(t => `<p>${t}</p>`).join('\n');
   return `
-<li class="entry" data-tags="${esc((p.tags || []).join(' '))}">
-  <div class="entry-head">
-    <h3 class="entry-title"><a href="${href}">${esc(p.name)}</a></h3>
-    <div class="entry-links"><a class="entry-open" href="${href}">Open</a><a href="${esc(p.repo)}">Source</a></div>
+<div class="thumbnail" id="${esc(p.slug)}" data-tags="${esc((p.tags || []).join(' '))}">
+  ${esc(p.name)}
+  <img class="thumbnail" src="${thumb}" alt="${esc(p.name)}: click to read about it" tabindex="0" width="240" height="142" loading="lazy">
+  <div class="icons">
+    <a href="${href}" title="Open ${esc(p.name)}"><img src="/assets/images/link.svg" alt="Open"></a>
+    <a href="${esc(p.repo)}" title="Source on GitHub"><img src="/assets/images/github-mark.svg" alt="GitHub"></a>
   </div>
-  <p class="entry-summary">${esc(p.summary)}</p>
-  <div class="entry-meta">${tags}${built}</div>
-</li>`;
+  <div class="tags">${tags}</div>
+  <div class="description">
+${paragraphs}
+${built}
+  </div>
+</div>`;
+}
+
+function latestItem(p) {
+  return `<li><a class="name" href="/projects/${esc(p.slug)}/">${esc(p.name)}</a> <span class="summary">${esc(p.summary)}</span></li>`;
+}
+
+// Publish the pictures of the day: the newest 30 dated sets from backgrounds/,
+// plus an index the front page reads. Older sets use the 2016 metadata format.
+function buildBackgrounds() {
+  const src = join(ROOT, 'backgrounds');
+  const out = join(DIST, 'backgrounds');
+  rmSync(out, { recursive: true, force: true });
+  mkdirSync(out, { recursive: true });
+  const dates = readdirSync(src).filter(f => /^\d{4}\.\d{2}\.\d{2}\.jpg$/.test(f)).map(f => f.slice(0, 10)).sort().reverse().slice(0, 30);
+  const days = [];
+  for (const d of dates) {
+    let meta = {};
+    try {
+      if (existsSync(join(src, `${d}.json`))) {
+        const j = JSON.parse(readFileSync(join(src, `${d}.json`), 'utf8'));
+        meta = { title: j.post?.title, author: j.post?.author, permalink: j.post?.permalink, color: j.image?.color };
+      } else if (existsSync(join(src, `${d}.js`))) {
+        const j = JSON.parse(readFileSync(join(src, `${d}.js`), 'utf8'));
+        meta = { title: j.title, author: j.author, permalink: j.permalink ? `https://www.reddit.com${j.permalink}` : '' };
+      }
+    } catch (e) { console.error(`[glf] backgrounds: bad metadata for ${d}: ${e.message}`); }
+    cpSync(join(src, `${d}.jpg`), join(out, `${d}.jpg`));
+    if (existsSync(join(src, `${d}.css`))) cpSync(join(src, `${d}.css`), join(out, `${d}.css`));
+    days.push({ date: d, title: meta.title || '', author: meta.author || '', permalink: meta.permalink || '', color: meta.color || '' });
+  }
+  writeFileSync(join(out, 'index.json'), JSON.stringify({ generated: new Date().toISOString(), days }, null, 2));
+  log(`backgrounds: ${days.length} days${days.length ? `, latest ${days[0].date}` : ''}`);
 }
 
 function buildSite(built) {
@@ -174,12 +214,10 @@ function buildSite(built) {
   const vars = {
     site: config.site,
     year: String(new Date().getFullYear()),
-    stripes: stripesSVG({ width: 1200, height: 120 }),
-    stripesSmall: stripesSVG({ width: 1200, height: 14 }),
     socialLinks: config.site.social.map(s => `<a href="${esc(s.url)}">${esc(s.name)}</a>`).join(''),
     projectCount: String(projects.length),
     projectEntries: projects.map(projectEntry).join('\n'),
-    latestEntries: projects.slice(0, 3).map(projectEntry).join('\n'),
+    latestList: projects.slice(0, 5).map(latestItem).join('\n'),
     tagFilters: tags.map(([t, n]) => `<button type="button" class="tag-filter" data-tag="${esc(t)}" aria-pressed="false">${esc(t)}<span class="tag-count">${n}</span></button>`).join(''),
   };
 
@@ -192,8 +230,10 @@ function buildSite(built) {
   }
   rmSync(join(DIST, 'assets'), { recursive: true, force: true });
   cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
+  if (existsSync(join(SRC, 'thumbnails'))) cpSync(join(SRC, 'thumbnails'), join(DIST, 'assets', 'thumbnails'), { recursive: true });
   if (existsSync(join(SRC, '_headers'))) cpSync(join(SRC, '_headers'), join(DIST, '_headers'));
   writeFileSync(join(DIST, 'projects.json'), JSON.stringify({ generated: new Date().toISOString(), projects }, null, 2));
+  buildBackgrounds();
   log(`site: ${Object.keys(pages).length} pages, ${projects.length} projects, ${tags.length} tags`);
 }
 

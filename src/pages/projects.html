@@ -3,22 +3,21 @@
 <head>
 {{> head}}
 <title>Projects of the Geodynamics Liberation Front</title>
-<meta name="description" content="A tagged catalog of the Geodynamics Liberation Front's published projects.">
+<meta name="description" content="The Geodynamics Liberation Front's published projects: interactive pages, printable things and tools, with their source code.">
 </head>
-<body class="catalog">
+<body class="page catalog">
 {{> nav}}
 <main>
-  <div class="catalog-head">
-    <h1>Projects</h1>
-    <p class="lead">{{projectCount}} published so far. Pick a tag to narrow the list.</p>
-  </div>
+  <p id="intro">
+    Here are the projects we have published so far. Most began as a place to tinker with a particular idea or technology; others were built as teaching tools. Click a picture to read more about it, the link icon to open it, and the GitHub cat to look at the code or fork the repository.
+  </p>
   <div class="tag-filters" role="group" aria-label="Filter by tag">
-    <button type="button" class="tag-filter is-active" data-tag="" aria-pressed="true">All</button>
+    <button type="button" class="tag-filter is-active" data-tag="" aria-pressed="true">all</button>
     {{tagFilters}}
   </div>
-  <ul class="entries" id="entries">
+  <div class="rows" id="entries">
 {{projectEntries}}
-  </ul>
+  </div>
   <p class="entries-empty" id="entries-empty" hidden>No project has all of those tags. Remove one to widen the list.</p>
 </main>
 {{> footer}}

@@ -9,10 +9,12 @@ publish, and a few small tools (see `backgrounds/`).
 projects.json          the site settings and the list of published projects
 src/pages/             page templates (index, about, projects)
 src/partials/          head, nav and footer shared by the pages
-src/assets/            stylesheet, catalog filter script, favicon
-backgrounds/           daily background picture fetcher (see below)
+src/assets/            stylesheet, page scripts, icons, favicon
+src/thumbnails/        screenshots for the projects page (scripts/thumbnail.mjs)
+backgrounds/           the picture of the day: fetcher and downloaded pictures (see below)
 scripts/build.mjs      the build: fetch every project, build it, assemble dist/
-scripts/lib/           template helper and the magnetic-stripes hero
+scripts/lib/           template helper
+scripts/thumbnail.mjs  captures a project screenshot for the projects page
 .github/workflows/     builds and deploys to Cloudflare Pages
 build/                 checkouts and state, not in git
 dist/                  the finished site, not in git
@@ -27,7 +29,13 @@ Ocean's data build needs Python 3 with numpy and pyshp, and downloads about
 ```
 npm run build          # fetch, build and publish every project, then the site
 npm run serve          # http://localhost:8080/
+npm run thumbnails     # screenshot every project into src/thumbnails/ (after a build)
 ```
+
+The design follows the original 2016 site: the front page is that day's
+picture from r/EarthPorn with the mission statement scrolling over it, the
+projects page is a grid of screenshots that open into write-ups, and the type
+is Quicksand and Roboto.
 
 `scripts/build.mjs` takes a few flags:
 
@@ -66,10 +74,13 @@ Add an entry to `projects.json`:
 | `branch` | optional; the remote's default branch is used when omitted |
 | `build` | shell commands run in the checkout, in order; may be empty |
 | `publish` | the directory in the checkout that is copied to the site; it needs an `index.html` |
+| `description` | optional paragraphs (HTML allowed) shown when the project's picture is clicked |
 | `tags` | any words; the catalog builds its filter list from them |
 | `added` | the date it was first published; the catalog sorts newest first |
 
 Projects should use relative URLs, since they are served under a subfolder.
+After the first build, run `node scripts/thumbnail.mjs <slug>` to capture its
+picture for the projects page and commit `src/thumbnails/<slug>.png`.
 
 ## Previewing unpublished work
 
@@ -113,10 +124,29 @@ certificate (Universal SSL) at no cost and renews it.
    add a Redirect Rule for the zone under Rules; a Pages `_redirects` file
    cannot match hostnames.
 
-### Automatic deployments
+### The daily publish
+
+The picture of the day is fetched from this machine, since Reddit blocks
+requests from cloud addresses, so the daily publish runs here too:
+
+```
+npm run publish        # fetch today's picture (if it can), build, deploy
+```
+
+A cron entry runs it every morning, for example:
+
+```
+15 6 * * * cd /home/robert/work/glf/glf && npm run publish >> backgrounds/publish.log 2>&1
+```
+
+The build publishes the newest 30 days of pictures found in `backgrounds/`
+under `/backgrounds/` with an `index.json` the front page reads.
+
+### Deployments from GitHub
 
 `.github/workflows/publish.yml` builds the site and deploys it with wrangler on
-every push, once a day, and on demand. It needs two repository secrets under
+every push and on demand. Such a deployment carries only the pictures committed
+to the repository (the 2016 ones), until the next daily publish from here. It needs two repository secrets under
 Settings, Secrets and variables, Actions:
 
 | secret | value |
@@ -136,7 +166,8 @@ posts in order, and keeps the first one that is at least 1920 by 1080, no wider
 than 2:1, and dark enough on average for text to sit on. It writes the picture,
 a stylesheet made from `backgrounds/template.css` with the picture's average
 colour filled in, and a JSON file with the post's details, all named by the
-date, plus `latest.*` copies. `backgrounds/index.html` shows the result.
+date, plus `latest.*` copies. The front page shows the newest and lets visitors
+page back through earlier days; `backgrounds/index.html` is a minimal demo.
 
 ```
 npm install                          # playwright
@@ -145,8 +176,3 @@ npm run background                   # into backgrounds/
 node backgrounds/fetch.mjs --help    # all options: --subreddit --sort --size --aspect --luma --out --name
 ```
 
-To fetch one a day, run it from cron, for example at 06:15:
-
-```
-15 6 * * * cd /path/to/glf && node backgrounds/fetch.mjs --out=/var/www/backgrounds >> backgrounds/fetch.log 2>&1
-```
