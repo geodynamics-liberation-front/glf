@@ -102,7 +102,7 @@ certificate (Universal SSL) at no cost and renews it.
        npx wrangler@4 pages project create glf --production-branch=main
        npm run build && npm run deploy
 
-   The site is now at https://glf.pages.dev.
+   The site is now at https://glf-3lx.pages.dev.
 4. In the Pages project, open Custom domains and add `therealglf.org` and
    `www.therealglf.org`. Cloudflare creates the DNS records itself when the
    zone is on Cloudflare; delete the old A record for the university host if
