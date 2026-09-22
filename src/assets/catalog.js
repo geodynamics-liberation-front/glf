@@ -3,7 +3,7 @@
 // and are mirrored into the URL hash (#maps+interactive) so a view can be linked.
 (function () {
   'use strict';
-  var entries = Array.prototype.slice.call(document.querySelectorAll('#entries .thumbnail'));
+  var entries = Array.prototype.slice.call(document.querySelectorAll('#entries > div.thumbnail'));
   var buttons = Array.prototype.slice.call(document.querySelectorAll('.tag-filter'));
   var empty = document.getElementById('entries-empty');
   if (!entries.length) return;
@@ -19,7 +19,8 @@
   }
   entries.forEach(function (node) {
     var img = node.querySelector('img.thumbnail');
-    if (img) img.addEventListener('click', function () { select(node); });
+    if (!img) return;
+    img.addEventListener('click', function () { select(node); });
     img.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(node); } });
   });
 
