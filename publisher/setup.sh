@@ -2,7 +2,7 @@
 # Set up a Debian machine (a Proxmox LXC container is ideal) to publish
 # therealglf.org every morning. Run as root on a fresh Debian 12 or 13:
 #
-#   apt install -y curl && curl -fsSL https://raw.githubusercontent.com/geodynamics-liberation-front/glf/main/publisher/setup.sh | bash
+#   apt update && apt install -y curl && curl -fsSL https://raw.githubusercontent.com/geodynamics-liberation-front/glf/main/publisher/setup.sh | bash
 #
 # then put the Cloudflare API token in /etc/glf-publish.env and run
 #
@@ -34,10 +34,10 @@ if [ ! -d "$DIR/.git" ]; then
   git clone --quiet "$REPO" "$DIR"
   chown -R glf:glf "$DIR"
 fi
-sudo -u glf -H bash -c "cd '$DIR' && git pull --ff-only --quiet && npm ci --no-audit --no-fund --silent"
+runuser -u glf -- bash -c "cd '$DIR' && git pull --ff-only --quiet && npm ci --no-audit --no-fund --silent"
 
 echo "== Chromium for Playwright (with its system libraries)"
-sudo -u glf -H bash -c "cd '$DIR' && npx playwright install chromium"
+runuser -u glf -- bash -c "cd '$DIR' && npx playwright install chromium"
 (cd "$DIR" && npx playwright install-deps chromium)
 
 echo "== systemd"

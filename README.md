@@ -136,10 +136,12 @@ npm run publish        # fetch today's picture (if it can), build, deploy
 
 It is meant to run every morning on a small always-on Debian machine on the
 home network (a Proxmox LXC container), because Reddit blocks cloud addresses.
-`publisher/` has a setup script and a systemd service and timer for that:
+`publisher/` has a setup script and a systemd service and timer for that;
+[publisher/INSTALL.md](publisher/INSTALL.md) walks through installing it. In
+short:
 
 ```
-apt install -y curl && curl -fsSL https://raw.githubusercontent.com/geodynamics-liberation-front/glf/main/publisher/setup.sh | bash
+apt update && apt install -y curl && curl -fsSL https://raw.githubusercontent.com/geodynamics-liberation-front/glf/main/publisher/setup.sh | bash
 ```
 
 Then put a Cloudflare API token (Cloudflare Pages: Edit) in
