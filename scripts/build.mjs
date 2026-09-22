@@ -16,6 +16,7 @@
 // work that is not pushed yet. The catalog marks such entries as local.
 
 import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -208,11 +209,21 @@ function buildBackgrounds() {
   log(`backgrounds: ${days.length} days${days.length ? `, latest ${days[0].date}` : ''}`);
 }
 
+// A short hash of everything under src/assets, appended to asset URLs so that
+// browsers and the CDN fetch new versions after a change.
+function assetVersion() {
+  const h = createHash('sha1');
+  const walk = dir => { for (const e of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) e.isDirectory() ? walk(join(dir, e.name)) : h.update(e.name).update(readFileSync(join(dir, e.name))); };
+  walk(join(SRC, 'assets'));
+  return h.digest('hex').slice(0, 10);
+}
+
 function buildSite(built) {
   const projects = sortedProjects(built);
   const tags = tagList(projects);
   const vars = {
     site: config.site,
+    v: assetVersion(),
     year: String(new Date().getFullYear()),
     socialLinks: config.site.social.map(s => `<a href="${esc(s.url)}">${esc(s.name)}</a>`).join(''),
     projectCount: String(projects.length),
