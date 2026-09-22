@@ -186,7 +186,8 @@ page back through earlier days; `backgrounds/index.html` is a minimal demo.
 ```
 npm install                          # playwright
 npx playwright install chromium      # once, if no Chromium is cached
-npm run background                   # into backgrounds/
+npm run background                   # into backgrounds/; does nothing if today's files exist
+node backgrounds/fetch.mjs --force   # replace today's picture
 node backgrounds/fetch.mjs --help    # all options: --subreddit --sort --size --aspect --luma --out --name
 ```
 

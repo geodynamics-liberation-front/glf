@@ -11,10 +11,13 @@
 //
 // plus latest.jpg / latest.css / latest.json copies, so a page can always
 // point at "latest". <name> defaults to the UTC date, YYYY.MM.DD, as before.
+// When all three files for <name> already exist nothing is fetched; --force
+// fetches and overwrites them anyway.
 //
 //   node backgrounds/fetch.mjs                      r/EarthPorn, hot, into backgrounds/
 //   node backgrounds/fetch.mjs --subreddit=SpacePorn --sort=top --out=/var/www/bg
 //   node backgrounds/fetch.mjs --size=2560x1440 --aspect=21:9 --luma=80 --verbose
+//   node backgrounds/fetch.mjs --force              replace today's picture
 //
 // Needs the playwright package and a Chromium (npx playwright install chromium).
 // The browser profile is kept in backgrounds/.profile (ignored by git) so reddit
@@ -43,6 +46,7 @@ const defaults = {
   template: join(HERE, 'template.css'),
   limit: '40',            // how many posts to consider before giving up
   latest: true,           // also write latest.jpg/css/json
+  force: false,           // fetch even when <name>.jpg/css/json already exist
   verbose: false,
   help: false,
 };
@@ -60,6 +64,14 @@ if (opts.help) {
   process.exit(0);
 }
 
+const OUT = resolve(opts.out);
+const STEM = (() => {
+  const now = new Date();
+  return String(opts.name)
+    .replace('YYYY', String(now.getUTCFullYear()))
+    .replace('MM', String(now.getUTCMonth() + 1).padStart(2, '0'))
+    .replace('DD', String(now.getUTCDate()).padStart(2, '0'));
+})();
 const [minW, minH] = String(opts.size).split(/\D+/).map(Number);
 const [arW, arH] = String(opts.aspect).split(/\D+/).map(Number);
 const maxAspect = arW / arH;
@@ -206,6 +218,11 @@ const hex = v => Math.round(v).toString(16).padStart(2, '0');
 
 // ---- main ------------------------------------------------------------------------
 
+if (!opts.force && ['jpg', 'css', 'json'].every(ext => existsSync(join(OUT, `${STEM}.${ext}`)))) {
+  log(`${join(OUT, STEM)}.{jpg,css,json} already exist; nothing to do (use --force to replace them)`);
+  process.exit(0);
+}
+
 const PROFILE = join(HERE, '.profile');
 mkdirSync(PROFILE, { recursive: true });
 // Containers often have a small /dev/shm, which crashes Chromium's renderer on
@@ -300,12 +317,7 @@ try {
 }
 
 function writeOutput(chosen, jpegBytes) {
-  const now = new Date();
-  const stem = String(opts.name)
-    .replace('YYYY', String(now.getUTCFullYear()))
-    .replace('MM', String(now.getUTCMonth() + 1).padStart(2, '0'))
-    .replace('DD', String(now.getUTCDate()).padStart(2, '0'));
-  const out = resolve(opts.out);
+  const stem = STEM, out = OUT;
   mkdirSync(out, { recursive: true });
 
   const vars = { color: chosen.image.color, luma: String(chosen.image.luma), width: String(chosen.image.width), height: String(chosen.image.height), title: chosen.post.title, author: chosen.post.author };
