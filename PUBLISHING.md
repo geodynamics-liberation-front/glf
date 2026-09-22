@@ -39,8 +39,46 @@ for every project, so a project needs to follow these rules and nothing else.
 4. **A README** at the repository root says what the project is, how to run
    it locally, its prerequisites, and its data sources and credits.
 
+5. **Dependencies are checked, never installed.**
+   - A `check` target verifies every prerequisite (tools on the PATH, Python
+     packages, minimum versions) and prints one line per missing item saying
+     what it is and how to get it, then exits non-zero. `dist` depends on
+     `check`, so a build on a machine that lacks something stops before doing
+     any work.
+   - A build never runs `pip install`, `npm install`, `apt`, `brew` or the
+     like. Python packages are listed in `requirements.txt`, Node packages in
+     `package.json`, and the README says to install them once. The site build
+     machine installs what the README asks for and expects nothing else.
+   - Vendored JavaScript (checked in under `html/` or `site/`) and CDN links
+     are fine and need no check.
+
+6. **Fetched data is verified.** When the build downloads data:
+   - Downloads go into a `sources/` directory (ignored by git) and are
+     skipped when the file is already there, so a rebuild does not fetch again.
+   - Each download is verified before use: a size or, preferably, a SHA-256
+     checksum recorded in the repository (for example in `SHA256SUMS` or in
+     the fetch script). A file that fails verification is deleted and the
+     build fails, so a truncated download is never processed.
+   - Each download is retried a few times and, where the dataset has a
+     mirror, fetched from the mirror when the primary source fails.
+   - The fetch script names each source, its version, and its licence in the
+     README (see the data credits sections of the existing projects).
+
+7. **Failures are loud.** Any missing prerequisite, failed download, failed
+   verification or failed processing step stops the build with a non-zero
+   exit status and a one-line message on stderr that names what went wrong
+   and what to do about it. A build never continues with partial output and
+   never writes an incomplete `dist/`: build into `site/` or a temporary
+   directory and copy to `dist/` only at the end.
+
 That is the whole contract. The build clones the repository, runs `make dist`
 in it, and copies `dist/` to `/projects/<slug>/`.
+
+When a project's build fails, the site build prints the project's slug, the
+command and its exit status, keeps that project's previously published copy on
+the site, carries on with the other projects, and exits non-zero at the end so
+the failure is not missed. Nothing broken reaches the site, but nothing new
+does either until the build is fixed.
 
 ## Makefile templates
 
@@ -48,11 +86,14 @@ A static project with nothing to generate (everything already lives in
 `html/`):
 
 ```make
-.PHONY: dist clean serve
+.PHONY: dist check clean serve
 
-dist:
+dist: check
 	rm -rf dist
 	cp -r html dist
+
+check:
+	@command -v python3 >/dev/null || { echo "python3 is required (for make serve)" >&2; exit 1; }
 
 clean:
 	rm -rf dist
@@ -66,17 +107,22 @@ A project that downloads and processes data first:
 ```make
 PYTHON ?= python3
 
-.PHONY: dist data fetch clean serve
+.PHONY: dist check data fetch clean serve
 
 dist: data
 	rm -rf dist
 	cp -r site dist
 
-data: fetch
-	$(PYTHON) tools/build_data.py        # writes site/data/
+check:
+	@command -v $(PYTHON) >/dev/null || { echo "python3 is required" >&2; exit 1; }
+	@command -v curl >/dev/null || { echo "curl is required" >&2; exit 1; }
+	@$(PYTHON) -c 'import numpy, shapefile' 2>/dev/null || { echo "missing Python packages: pip install -r tools/requirements.txt" >&2; exit 1; }
 
-fetch:
-	tools/fetch_data.sh                  # downloads into sources/, keeps existing files
+data: check fetch
+	$(PYTHON) tools/build_data.py        # writes site/data/; exits non-zero on any problem
+
+fetch: check
+	tools/fetch_data.sh                  # downloads into sources/, keeps existing files, verifies checksums
 
 clean:
 	rm -rf dist site/data
@@ -99,7 +145,9 @@ python3 -m http.server 8000 --directory dist
 ```
 
 Open http://localhost:8000/ and check that everything loads with no 404s in
-the browser console. Then confirm that no URL in `dist/` starts with `/`:
+the browser console. Also check the failure paths: `make check` on a machine
+missing a prerequisite must say what is missing, and a fetch script must fail
+when a download is truncated (truncate a file in `sources/` and rebuild). Then confirm that no URL in `dist/` starts with `/`:
 
 ```
 grep -rn 'src="/\|href="/\|fetch("/\|fetch(`/' dist --include=*.html --include=*.js
