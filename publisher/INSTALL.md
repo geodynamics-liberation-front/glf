@@ -100,8 +100,13 @@ right of the zone's Overview page if it ever needs checking.
 Start the service by hand and watch the log:
 
 ```
-systemctl start glf-publish.service && journalctl -u glf-publish -f
+systemctl start --no-block glf-publish.service && journalctl -u glf-publish -f
 ```
+
+`--no-block` matters: the service is a oneshot, so without it `systemctl
+start` waits for the whole run to finish before the journal is even opened.
+The first two steps (pull and `npm ci`) run quietly, so the first lines to
+appear are the picture fetcher's, after a few seconds.
 
 The first run is the slow one: every project is cloned and built, and
 Across the Ocean downloads about 130 MB of data. The run is done when the
@@ -131,7 +136,7 @@ back up.
 | --- | --- |
 | see the last run | `journalctl -u glf-publish -n 200` |
 | follow a run | `journalctl -u glf-publish -f` |
-| publish now | `systemctl start glf-publish.service` |
+| publish now | `systemctl start --no-block glf-publish.service`, then follow the log |
 | pause the daily run | `systemctl disable --now glf-publish.timer` |
 | resume it | `systemctl enable --now glf-publish.timer` |
 | change the time | `systemctl edit glf-publish.timer`, then set `OnCalendar=` under `[Timer]` (write an empty `OnCalendar=` line first to clear the default) |

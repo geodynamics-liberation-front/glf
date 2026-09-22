@@ -145,7 +145,7 @@ apt update && apt install -y curl && curl -fsSL https://raw.githubusercontent.co
 ```
 
 Then put a Cloudflare API token (Cloudflare Pages: Edit) in
-`/etc/glf-publish.env` and run `systemctl start glf-publish.service` once to
+`/etc/glf-publish.env` and run `systemctl start --no-block glf-publish.service` once to
 check it. The timer runs at 06:15 each day, catches up if the machine was off,
 and logs to `journalctl -u glf-publish`. The service pulls this repository's
 main branch first, so pushed site changes go live with the next run.

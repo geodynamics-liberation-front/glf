@@ -6,7 +6,7 @@
 #
 # then put the Cloudflare API token in /etc/glf-publish.env and run
 #
-#   systemctl start glf-publish.service && journalctl -u glf-publish -f
+#   systemctl start --no-block glf-publish.service && journalctl -u glf-publish -f
 #
 # What it does: installs git, make, Python with numpy and pyshp, Node 22 and
 # the Chromium that Playwright needs; creates the glf user; clones the site
@@ -52,4 +52,4 @@ systemctl enable --now glf-publish.timer
 
 echo
 echo "done. Next run: $(systemctl list-timers glf-publish.timer --no-legend | awk '{print $1, $2, $3}')"
-echo "Test now with: systemctl start glf-publish.service && journalctl -u glf-publish -f"
+echo "Test now with: systemctl start --no-block glf-publish.service && journalctl -u glf-publish -f"
