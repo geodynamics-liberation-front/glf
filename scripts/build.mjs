@@ -188,7 +188,7 @@ function latestItem(p) {
 }
 
 // Publish the pictures of the day: the newest 30 dated sets from backgrounds/,
-// plus an index the front page reads. Older sets use the 2016 metadata format.
+// plus an index the front page reads.
 function buildBackgrounds() {
   const src = join(ROOT, 'backgrounds');
   const out = join(DIST, 'backgrounds');
@@ -202,9 +202,6 @@ function buildBackgrounds() {
       if (existsSync(join(src, `${d}.json`))) {
         const j = JSON.parse(readFileSync(join(src, `${d}.json`), 'utf8'));
         meta = { title: j.post?.title, author: j.post?.author, permalink: j.post?.permalink, color: j.image?.color };
-      } else if (existsSync(join(src, `${d}.js`))) {
-        const j = JSON.parse(readFileSync(join(src, `${d}.js`), 'utf8'));
-        meta = { title: j.title, author: j.author, permalink: j.permalink ? `https://www.reddit.com${j.permalink}` : '' };
       }
     } catch (e) { console.error(`[glf] backgrounds: bad metadata for ${d}: ${e.message}`); }
     cpSync(join(src, `${d}.jpg`), join(out, `${d}.jpg`));

@@ -158,9 +158,10 @@ under `/backgrounds/` with an `index.json` the front page reads.
 `.github/workflows/publish.yml` builds the site on every push and on demand,
 which checks that every project still builds from a fresh clone. It deploys
 only when the Cloudflare secrets below are set; without them the deploy step
-is skipped and the run still passes. Such a deployment carries only the pictures committed
-to the repository (the 2016 ones), until the next daily publish from here. It needs two repository secrets under
-Settings, Secrets and variables, Actions:
+is skipped and the run still passes. Such a deployment carries no pictures of
+the day, since those live only on the publishing machine, until the next daily
+publish from there. It needs two repository secrets under Settings, Secrets and
+variables, Actions:
 
 | secret | value |
 | --- | --- |
