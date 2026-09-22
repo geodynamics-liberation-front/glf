@@ -29,11 +29,7 @@
         "Coastlines come from GSHHG, countries and seas from Natural Earth, and towns from GeoNames. The data build and the shoreline format are documented in the repository."
       ],
       "repo": "https://github.com/geodynamics-liberation-front/across-the-ocean",
-      "tags": [
-        "geography",
-        "maps",
-        "interactive"
-      ],
+      "tags": ["geography", "maps", "interactive"],
       "added": "2026-09-21"
     },
     {
@@ -46,13 +42,21 @@
         "Try beats: in multi-channel mode add a second channel, set one to 440 Hz and the other to 450 Hz, and unmute. You will hear a 440 Hz tone pulsing ten times a second. Widen the display to 100 m and the pulsing appears in the master graph. The beat is interference between the two waves, and its frequency is the difference of theirs. Keep the volume low; listening at high volume or for long periods can damage hearing."
       ],
       "repo": "https://github.com/geodynamics-liberation-front/frequency-generator",
-      "tags": [
-        "physics",
-        "sound",
-        "waves",
-        "interactive"
-      ],
+      "tags": ["physics", "sound", "waves", "interactive"],
       "added": "2026-09-21"
+    },
+    {
+      "slug": "california-pleasures",
+      "name": "Topographic Pleasures",
+      "summary": "Every US state drawn the way Joy Division's Unknown Pleasures cover drew a pulsar: one line per latitude, lifted by the land beneath it.",
+      "description": [
+        "Joy Division turned scientific data into art. Peter Saville's 1979 sleeve reproduced Harold Craft's plot of successive pulses from the pulsar CP 1919, each trace hiding the ones behind it. Topographic Pleasures borrows that connection between the scientific and the creative and applies it to real elevation data, so each state is at once recognisable and novel.",
+        "The front page is a map of the United States, Alaska and Hawaii included, drawn as flat lines inside faint state outlines. Move across it and the state under the pointer rises to show its terrain; click it to open the state's page. There you can tune the drawing, how many lines, how tall the mountains, how fine the detail, the projection and the colours, and download it as an SVG or a one-page vector PDF. Settings live in the link, so a drawing can be shared.",
+        "Elevation is the USGS/NGA GMTED2010 30 arc-second grid and the outlines are the US Census Bureau's cartographic boundaries, both public domain. It began in 2021 as California Pleasures, a single script for one state."
+      ],
+      "repo": "https://github.com/geodynamics-liberation-front/california-pleasures",
+      "tags": ["topography", "maps", "art", "interactive"],
+      "added": "2026-09-22"
     }
   ]
 }
