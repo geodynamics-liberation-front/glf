@@ -172,9 +172,13 @@ function imageURL(url) {
 
 // ---- image analysis (in the browser, via canvas) --------------------------------
 
+// The evaluate has no timeout of its own, and a renderer that stalls or dies
+// while decoding a large image would otherwise hang the run for good.
 async function analyze(page, bytes, contentType, wantJPEG) {
   const dataUrl = `data:${contentType};base64,${bytes.toString('base64')}`;
-  return page.evaluate(async ({ dataUrl, wantJPEG }) => {
+  let timer;
+  const timeout = new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('analysis timed out after 60s')), 60000); });
+  const work = page.evaluate(async ({ dataUrl, wantJPEG }) => {
     const img = new Image();
     img.src = dataUrl;
     await img.decode();
@@ -195,6 +199,7 @@ async function analyze(page, bytes, contentType, wantJPEG) {
     }
     return { width: w, height: h, r: r / n, g: g / n, b: b / n, jpeg };
   }, { dataUrl, wantJPEG });
+  try { return await Promise.race([work, timeout]); } finally { clearTimeout(timer); }
 }
 
 const hex = v => Math.round(v).toString(16).padStart(2, '0');
@@ -203,7 +208,11 @@ const hex = v => Math.round(v).toString(16).padStart(2, '0');
 
 const PROFILE = join(HERE, '.profile');
 mkdirSync(PROFILE, { recursive: true });
-const launchArgs = process.env.GLF_NO_SANDBOX ? ['--no-sandbox'] : []; // some containers cannot run Chromium's sandbox
+// Containers often have a small /dev/shm, which crashes Chromium's renderer on
+// large images unless it keeps its shared memory elsewhere; some cannot run
+// Chromium's sandbox at all.
+const launchArgs = ['--disable-dev-shm-usage'];
+if (process.env.GLF_NO_SANDBOX) launchArgs.push('--no-sandbox');
 const launchOpts = { headless: true, viewport: { width: 1440, height: 900 }, args: launchArgs };
 let context = await chromium.launchPersistentContext(PROFILE, launchOpts);
 // Headless Chromium announces itself as "HeadlessChrome/151.0.7922.34", which
@@ -222,8 +231,11 @@ try {
   log(`r/${opts.subreddit}/${opts.sort}: ${posts.length} posts`);
   if (!posts.length) fail('no posts found; reddit may have changed its markup or blocked the request');
 
-  const canvasPage = await context.newPage();
+  // The listing tab is reddit's whole web app and holds a few hundred MB;
+  // let it go before decoding images, which is what needs the memory.
+  let canvasPage = await context.newPage();
   await canvasPage.goto('about:blank');
+  await page.close();
 
   let chosen = null;
   let considered = 0;
@@ -232,6 +244,7 @@ try {
     const src = imageURL(post.url);
     if (!src) { debug(`skip (not a single image): ${post.url}`); continue; }
     considered++;
+    debug(`downloading ${src}`);
     let resp;
     try {
       resp = await context.request.get(src, { headers: { Referer: 'https://www.reddit.com/' }, timeout: 60000, maxRedirects: 5 });
@@ -240,10 +253,18 @@ try {
     if (!resp.ok() || !type.startsWith('image/')) { debug(`skip (${resp.status()} ${type || 'no type'}): ${src}`); continue; }
     const bytes = await resp.body();
     if (bytes.length > 40 * 1024 * 1024) { debug(`skip (${(bytes.length / 1e6).toFixed(0)} MB, too large): ${src}`); continue; }
+    debug(`analyzing ${(bytes.length / 1e6).toFixed(1)} MB ${type}`);
 
     let a;
     try { a = await analyze(canvasPage, bytes, type, false); }
-    catch (e) { debug(`skip (undecodable): ${src}: ${e.message}`); continue; }
+    catch (e) {
+      debug(`skip (undecodable): ${src}: ${e.message}`);
+      // A stuck or crashed tab stays that way: replace it before the next image.
+      await canvasPage.close().catch(() => {});
+      canvasPage = await context.newPage();
+      await canvasPage.goto('about:blank');
+      continue;
+    }
     const luma = 0.2126 * a.r + 0.7152 * a.g + 0.0722 * a.b;
     const aspect = a.width / a.height;
     const reasons = [];
