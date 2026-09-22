@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{> head}}
+<title>Projects of the Geodynamics Liberation Front</title>
+<meta name="description" content="A tagged catalog of the Geodynamics Liberation Front's published projects.">
+</head>
+<body class="catalog">
+{{> nav}}
+<main>
+  <div class="catalog-head">
+    <h1>Projects</h1>
+    <p class="lead">{{projectCount}} published so far. Pick a tag to narrow the list.</p>
+  </div>
+  <div class="tag-filters" role="group" aria-label="Filter by tag">
+    <button type="button" class="tag-filter is-active" data-tag="" aria-pressed="true">All</button>
+    {{tagFilters}}
+  </div>
+  <ul class="entries" id="entries">
+{{projectEntries}}
+  </ul>
+  <p class="entries-empty" id="entries-empty" hidden>No project has all of those tags. Remove one to widen the list.</p>
+</main>
+{{> footer}}
+<script src="/assets/catalog.js"></script>
+</body>
+</html>
