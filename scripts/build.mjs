@@ -96,8 +96,12 @@ function describe(dir) {
   }
 }
 
+// The contract (PUBLISHING.md): `make dist` produces the site in dist/.
+const DEFAULT_BUILD = ['make dist'];
+const DEFAULT_PUBLISH = 'dist';
+
 function runBuild(p, dir) {
-  for (const cmd of p.build || []) {
+  for (const cmd of p.build || DEFAULT_BUILD) {
     log(`${p.slug}: $ ${cmd}`);
     const r = spawnSync('sh', ['-c', cmd], { cwd: dir, stdio: 'inherit', env: process.env });
     if (r.status !== 0) throw new Error(`${p.slug}: "${cmd}" exited with ${r.status}`);
@@ -105,8 +109,10 @@ function runBuild(p, dir) {
 }
 
 function publish(p, dir) {
-  const from = join(dir, p.publish);
-  if (!existsSync(from) || !statSync(from).isDirectory()) throw new Error(`${p.slug}: publish directory ${p.publish} not found`);
+  const publishDir = p.publish || DEFAULT_PUBLISH;
+  const from = join(dir, publishDir);
+  if (!existsSync(from) || !statSync(from).isDirectory()) throw new Error(`${p.slug}: publish directory ${publishDir} not found`);
+  if (!existsSync(join(from, 'index.html'))) throw new Error(`${p.slug}: ${publishDir}/ has no index.html`);
   const to = join(DIST, 'projects', p.slug);
   rmSync(to, { recursive: true, force: true });
   cpSync(from, to, { recursive: true, dereference: true });

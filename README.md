@@ -51,7 +51,10 @@ pushed. The catalog records the commit each project was built from.
 
 ## Publishing a project
 
-Add an entry to `projects.json`:
+Every published project follows the contract in [PUBLISHING.md](PUBLISHING.md):
+`make dist` at the repository root produces a self-contained static site in
+`dist/`. Point an agent at that file to make a project publishable. Then add
+an entry to `projects.json`:
 
 ```json
 {
@@ -61,8 +64,6 @@ Add an entry to `projects.json`:
   "repo": "https://github.com/geodynamics-liberation-front/plate-tectonic-passport",
   "branch": "main",
   "tags": ["geophysics", "print"],
-  "build": ["./fetch_data.sh", "python3 build_passport.py"],
-  "publish": "build/site",
   "added": "2026-10-01"
 }
 ```
@@ -72,8 +73,8 @@ Add an entry to `projects.json`:
 | `slug` | URL path: the project appears at `/projects/<slug>/` |
 | `repo` | the git URL to clone |
 | `branch` | optional; the remote's default branch is used when omitted |
-| `build` | shell commands run in the checkout, in order; may be empty |
-| `publish` | the directory in the checkout that is copied to the site; it needs an `index.html` |
+| `build` | optional override of the contract: shell commands run in the checkout instead of `make dist` |
+| `publish` | optional override: the directory copied to the site instead of `dist/` |
 | `description` | optional paragraphs (HTML allowed) shown when the project's picture is clicked |
 | `tags` | any words; the catalog builds its filter list from them |
 | `added` | the date it was first published; the catalog sorts newest first |

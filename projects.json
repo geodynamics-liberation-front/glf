@@ -4,8 +4,14 @@
     "url": "https://therealglf.org",
     "github": "https://github.com/geodynamics-liberation-front",
     "social": [
-      { "name": "GitHub", "url": "https://github.com/geodynamics-liberation-front" },
-      { "name": "Facebook", "url": "https://www.facebook.com/GeodynamicsLiberationFront/" }
+      {
+        "name": "GitHub",
+        "url": "https://github.com/geodynamics-liberation-front"
+      },
+      {
+        "name": "Facebook",
+        "url": "https://www.facebook.com/GeodynamicsLiberationFront/"
+      }
     ]
   },
   "projects": [
@@ -19,9 +25,11 @@
         "Coastlines come from GSHHG, countries and seas from Natural Earth, and towns from GeoNames. The data build and the shoreline format are documented in the repository."
       ],
       "repo": "https://github.com/geodynamics-liberation-front/across-the-ocean",
-      "tags": ["geography", "maps", "interactive"],
-      "build": ["make data"],
-      "publish": "site",
+      "tags": [
+        "geography",
+        "maps",
+        "interactive"
+      ],
       "added": "2026-09-21"
     },
     {
@@ -34,9 +42,12 @@
         "Try beats: in multi-channel mode add a second channel, set one to 440 Hz and the other to 450 Hz, and unmute. You will hear a 440 Hz tone pulsing ten times a second. Widen the display to 100 m and the pulsing appears in the master graph. The beat is interference between the two waves, and its frequency is the difference of theirs. Keep the volume low; listening at high volume or for long periods can damage hearing."
       ],
       "repo": "https://github.com/geodynamics-liberation-front/frequency-generator",
-      "tags": ["physics", "sound", "waves", "interactive"],
-      "build": [],
-      "publish": "html",
+      "tags": [
+        "physics",
+        "sound",
+        "waves",
+        "interactive"
+      ],
       "added": "2026-09-21"
     }
   ]
