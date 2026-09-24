@@ -37,7 +37,7 @@ jobs:
             repos-${{ hashFiles('projects.json') }}-
             repos-
       - name: Build
-        run: npm run build
+        run: make dist
       - name: Skip deployment when no Cloudflare token is configured
         if: env.CLOUDFLARE_API_TOKEN == ''
         run: echo "Build succeeded. Not deploying, since the CLOUDFLARE_API_TOKEN secret is not set (see README, Deployments from GitHub)."

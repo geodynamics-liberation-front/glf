@@ -1,48 +1,51 @@
 <!doctype html>
 <html lang="en">
-<head>
-{{> head}}
-<title>Geodynamics Liberation Front</title>
-<meta name="description" content="The Geodynamics Liberation Front: science, technology, engineering, arts and math, taught with the Earth. Projects, tools and a picture of the Earth every day.">
-<link id="background_style" rel="stylesheet">
-</head>
-<body class="home">
-{{> nav}}
+  <head>
+    {{> head}}
+    <title>Geodynamics Liberation Front</title>
+    <meta
+      name="description"
+      content="The Geodynamics Liberation Front: science, technology, engineering, arts and math, taught with the Earth. Projects, tools and a picture of the Earth every day."
+    />
+    <link id="background_style" rel="stylesheet" />
+  </head>
+  <body class="home">
+    {{> nav}}
 
-<div class="bgimage-container">
-  <img id="background_image" class="bgimage" alt="">
-</div>
+    <div class="bgimage-container">
+      <img id="background_image" class="bgimage" alt="" />
+    </div>
 
-<div class="center-text-container">
-  <div id="scroll-hint" class="center-text" aria-hidden="true">&#x2935;</div>
-</div>
+    <div class="text-container">
+      <div class="text-padding"></div>
+      <div class="fade-in"></div>
+      <div class="text-body" id="text-body">
+        <h1 class="wordmark">Geodynamics Liberation Front</h1>
+        <p>
+          The Geodynamics Liberation Front is an outreach organization that exposes students and the general public to
+          scientific concepts, using the Earth and Earth processes as a tool to teach science, technology, engineering,
+          arts and math.
+        </p>
+        <p>
+          Most of what we make is small and open: a web page that answers one question well, a printable thing for a
+          classroom, a program you can read. Every project lives in a public repository, and this site is rebuilt from
+          the latest version of each one.
+        </p>
+        <h2>Latest projects</h2>
+        <ul class="latest">
+          {{latestList}}
+        </ul>
+        <p class="plain more"><a href="/projects/">all {{projectCount}} projects</a></p>
+      </div>
+      <div class="fade-out"></div>
+      <div class="text-padding"></div>
+    </div>
 
-<div class="text-container">
-  <div class="text-padding"></div>
-  <div class="fade-in"></div>
-  <div class="text-body" id="text-body">
-    <h1 class="wordmark">Geodynamics Liberation Front</h1>
-    <p>
-      The Geodynamics Liberation Front is an outreach organization that exposes students and the general public to scientific concepts, using the Earth and Earth processes as a tool to teach science, technology, engineering, arts and math.
-    </p>
-    <p>
-      Most of what we make is small and open: a web page that answers one question well, a printable thing for a classroom, a program you can read. Every project lives in a public repository, and this site is rebuilt from the latest version of each one.
-    </p>
-    <h2>Latest projects</h2>
-    <ul class="latest">
-{{latestList}}
-    </ul>
-    <p class="plain more"><a href="/projects/">all {{projectCount}} projects</a></p>
-  </div>
-  <div class="fade-out"></div>
-  <div class="text-padding"></div>
-</div>
+    <footer class="pod is-hidden" id="pod">
+      <button class="info_icon" id="info-icon" type="button" aria-label="About this picture">i</button>
+      <div class="author_info" id="author-info"></div>
+    </footer>
 
-<footer class="pod is-hidden" id="pod">
-  <button class="info_icon" id="info-icon" type="button" aria-label="About this picture">i</button>
-  <div class="author_info" id="author-info"></div>
-</footer>
-
-<script src="/assets/home.js?v={{v}}"></script>
-</body>
+    <script src="/assets/home.js?v={{v}}"></script>
+  </body>
 </html>

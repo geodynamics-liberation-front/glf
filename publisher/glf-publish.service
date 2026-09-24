@@ -11,9 +11,10 @@ User=glf
 WorkingDirectory=/opt/glf
 EnvironmentFile=/etc/glf-publish.env
 Environment=HOME=/home/glf
-# Track the site repository's main branch, then fetch, build and deploy.
+# Track the site repository's main branch, install its packages (make never
+# installs anything), then fetch, build and deploy.
 ExecStartPre=/usr/bin/git pull --ff-only --quiet
 ExecStartPre=/usr/bin/npm ci --no-audit --no-fund --silent
-ExecStart=/usr/bin/npm run publish
+ExecStart=/usr/bin/make publish
 TimeoutStartSec=2h
 Nice=10

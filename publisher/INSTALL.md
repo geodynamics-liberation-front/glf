@@ -5,22 +5,23 @@ requests from cloud addresses, so the picture is fetched, and the site built
 and deployed, from a small always-on machine on the home network. This
 directory holds everything for that machine:
 
-| file | purpose |
-| --- | --- |
-| `setup.sh` | one-shot installer for a fresh Debian machine; safe to run again |
-| `glf-publish.service` | the job: pull this repository, `npm ci`, `npm run publish` |
-| `glf-publish.timer` | runs the service at 06:15 every day, catching up if the machine was off |
-| `glf-publish.env.example` | template for `/etc/glf-publish.env`, which holds the Cloudflare token |
+| file                      | purpose                                                                 |
+| ------------------------- | ----------------------------------------------------------------------- |
+| `setup.sh`                | one-shot installer for a fresh Debian machine; safe to run again        |
+| `glf-publish.service`     | the job: pull this repository, `npm ci`, `make publish`                 |
+| `glf-publish.timer`       | runs the service at 06:15 every day, catching up if the machine was off |
+| `glf-publish.env.example` | template for `/etc/glf-publish.env`, which holds the Cloudflare token   |
 
 Each run does, as the `glf` user in `/opt/glf`:
 
 1. `git pull --ff-only` of this repository's main branch, so pushed site
    changes go live with the next run.
 2. `npm ci`, in case the packages changed.
-3. `npm run publish`, which is `npm run background` (fetch today's picture;
-   a failure here is ignored and the previous pictures are kept), then
-   `npm run build` (fetch and build every project, assemble `dist/`), then
-   `npm run deploy` (upload `dist/` to Cloudflare Pages).
+3. `make publish`, which checks the prerequisites and then fetches today's
+   picture (a failure here is ignored and the previous pictures are kept),
+   fetches and builds every project and assembles `dist/`, and uploads `dist/`
+   to Cloudflare Pages. It is the same as running `make background`,
+   `make dist` and `make deploy` in turn.
 
 ## 1. Make the machine
 
@@ -106,7 +107,8 @@ systemctl start --no-block glf-publish.service && journalctl -u glf-publish -f
 `--no-block` matters: the service is a oneshot, so without it `systemctl
 start` waits for the whole run to finish before the journal is even opened.
 The first two steps (pull and `npm ci`) run quietly, so the first lines to
-appear are the picture fetcher's, after a few seconds.
+appear are `prerequisites ok` from `make publish`, then the picture fetcher's,
+after a few seconds.
 
 The first run is the slow one: every project is cloned and built, and
 Across the Ocean downloads about 130 MB of data. The run is done when the
@@ -132,15 +134,15 @@ back up.
 
 ## Operating it
 
-| task | command |
-| --- | --- |
-| see the last run | `journalctl -u glf-publish -n 200` |
-| follow a run | `journalctl -u glf-publish -f` |
-| publish now | `systemctl start --no-block glf-publish.service`, then follow the log |
-| pause the daily run | `systemctl disable --now glf-publish.timer` |
-| resume it | `systemctl enable --now glf-publish.timer` |
-| change the time | `systemctl edit glf-publish.timer`, then set `OnCalendar=` under `[Timer]` (write an empty `OnCalendar=` line first to clear the default) |
-| update the machine | rerun the setup script from step 2 |
+| task                | command                                                                                                                                   |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| see the last run    | `journalctl -u glf-publish -n 200`                                                                                                        |
+| follow a run        | `journalctl -u glf-publish -f`                                                                                                            |
+| publish now         | `systemctl start --no-block glf-publish.service`, then follow the log                                                                     |
+| pause the daily run | `systemctl disable --now glf-publish.timer`                                                                                               |
+| resume it           | `systemctl enable --now glf-publish.timer`                                                                                                |
+| change the time     | `systemctl edit glf-publish.timer`, then set `OnCalendar=` under `[Timer]` (write an empty `OnCalendar=` line first to clear the default) |
+| update the machine  | rerun the setup script from step 2                                                                                                        |
 
 Nothing on the machine needs to be updated for ordinary site changes: the
 service pulls this repository's main branch before every run. Rerun the setup
@@ -189,7 +191,7 @@ the meantime, build without the broken one and deploy by hand:
 
 ```
 set -a; . /etc/glf-publish.env; set +a
-runuser -u glf -- bash -c 'cd /opt/glf && node scripts/build.mjs --only=<the other slugs> && npm run deploy'
+runuser -u glf -- bash -c 'cd /opt/glf && node scripts/build.mjs --only=<the other slugs> && make deploy'
 ```
 
 **The run takes too long.** The service allows two hours. If a run is killed

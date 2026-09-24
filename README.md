@@ -7,7 +7,7 @@ publish, and a few small tools (see `backgrounds/`).
 
 ```
 projects.json          the site settings and the list of published projects
-src/pages/             page templates (index, about, projects)
+src/pages/             page templates (index, about, projects, 404)
 src/partials/          head, nav and footer shared by the pages
 src/assets/            stylesheet, page scripts, icons, favicon
 src/thumbnails/        screenshots for the projects page (scripts/thumbnail.mjs)
@@ -26,11 +26,19 @@ Needs Node 20 or newer and git. Individual projects may need more (Across the
 Ocean's data build needs Python 3 with numpy and pyshp, and downloads about
 130 MB the first time).
 
+The Makefile gives the site the same interface as the projects it publishes:
+
 ```
-npm run build          # fetch, build and publish every project, then the site
-npm run serve          # http://localhost:8080/
-npm run thumbnails     # screenshot every project into src/thumbnails/ (after a build)
+make dist              # fetch, build and publish every project, then the site
+make site              # regenerate only the site pages (projects keep their last output)
+make serve             # regenerate the site pages and serve http://localhost:8080/
+make thumbnails        # screenshot every project into src/thumbnails/ (after a build)
+make check             # verify prerequisites
+make clean             # remove dist/
 ```
+
+Each target runs the matching npm script in `package.json`, which the
+publisher service and the GitHub workflow call directly.
 
 The design follows the original 2016 site: the front page is that day's
 picture from r/EarthPorn with the mission statement scrolling over it, the
@@ -39,11 +47,11 @@ is Quicksand and Roboto.
 
 `scripts/build.mjs` takes a few flags:
 
-| flag | effect |
-| --- | --- |
-| `--only=slug,slug` | build only these projects; others keep their last output |
-| `--offline` | do not fetch; build from the checkouts already in `build/repos/` |
-| `--no-projects` | regenerate the site pages only |
+| flag               | effect                                                           |
+| ------------------ | ---------------------------------------------------------------- |
+| `--only=slug,slug` | build only these projects; others keep their last output         |
+| `--offline`        | do not fetch; build from the checkouts already in `build/repos/` |
+| `--no-projects`    | regenerate the site pages only                                   |
 
 The build always checks out the tip of each project's default branch (or the
 `branch` given in `projects.json`), so a rebuild picks up whatever was last
@@ -68,16 +76,16 @@ an entry to `projects.json`:
 }
 ```
 
-| field | meaning |
-| --- | --- |
-| `slug` | URL path: the project appears at `/projects/<slug>/` |
-| `repo` | the git URL to clone |
-| `branch` | optional; the remote's default branch is used when omitted |
-| `build` | optional override of the contract: shell commands run in the checkout instead of `make dist` |
-| `publish` | optional override: the directory copied to the site instead of `dist/` |
-| `description` | optional paragraphs (HTML allowed) shown when the project's picture is clicked |
-| `tags` | any words; the catalog builds its filter list from them |
-| `added` | the date it was first published; the catalog sorts newest first |
+| field         | meaning                                                                                      |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| `slug`        | URL path: the project appears at `/projects/<slug>/`                                         |
+| `repo`        | the git URL to clone                                                                         |
+| `branch`      | optional; the remote's default branch is used when omitted                                   |
+| `build`       | optional override of the contract: shell commands run in the checkout instead of `make dist` |
+| `publish`     | optional override: the directory copied to the site instead of `dist/`                       |
+| `description` | optional paragraphs (HTML allowed) shown when the project's picture is clicked               |
+| `tags`        | any words; the catalog builds its filter list from them                                      |
+| `added`       | the date it was first published; the catalog sorts newest first                              |
 
 Projects should use relative URLs, since they are served under a subfolder.
 After the first build, run `node scripts/thumbnail.mjs <slug>` to capture its
@@ -112,9 +120,10 @@ certificate (Universal SSL) at no cost and renews it.
 
        npx wrangler@4 login
        npx wrangler@4 pages project create glf --production-branch=main
-       npm run build && npm run deploy
+       make dist deploy
 
    The site is now at https://glf-3lx.pages.dev.
+
 4. In the Pages project, open Custom domains and add `therealglf.org` and
    `www.therealglf.org`. Cloudflare creates the DNS records itself when the
    zone is on Cloudflare; delete the old A record for the university host if
@@ -131,7 +140,7 @@ The picture of the day is fetched from this machine, since Reddit blocks
 requests from cloud addresses, so the daily publish runs here too:
 
 ```
-npm run publish        # fetch today's picture (if it can), build, deploy
+make publish           # fetch today's picture (if it can), build, deploy
 ```
 
 It is meant to run every morning on a small always-on Debian machine on the
@@ -163,10 +172,10 @@ the day, since those live only on the publishing machine, until the next daily
 publish from there. It needs two repository secrets under Settings, Secrets and
 variables, Actions:
 
-| secret | value |
-| --- | --- |
-| `CLOUDFLARE_ACCOUNT_ID` | shown on the right of the zone's Overview page |
-| `CLOUDFLARE_API_TOKEN` | a token made at My Profile, API Tokens, with the "Cloudflare Pages: Edit" permission for the account |
+| secret                  | value                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- |
+| `CLOUDFLARE_ACCOUNT_ID` | shown on the right of the zone's Overview page                                                       |
+| `CLOUDFLARE_API_TOKEN`  | a token made at My Profile, API Tokens, with the "Cloudflare Pages: Edit" permission for the account |
 
 `src/_headers` sets caching (project data files are versioned by query string
 and cached for a year); the build copies it to `dist/`.
@@ -186,8 +195,7 @@ page back through earlier days; `backgrounds/index.html` is a minimal demo.
 ```
 npm install                          # playwright
 npx playwright install chromium      # once, if no Chromium is cached
-npm run background                   # into backgrounds/; does nothing if today's files exist
+make background                      # into backgrounds/; does nothing if today's files exist
 node backgrounds/fetch.mjs --force   # replace today's picture
 node backgrounds/fetch.mjs --help    # all options: --subreddit --sort --size --aspect --luma --out --name
 ```
-

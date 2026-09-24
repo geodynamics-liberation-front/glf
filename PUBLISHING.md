@@ -71,6 +71,24 @@ for every project, so a project needs to follow these rules and nothing else.
    never writes an incomplete `dist/`: build into `site/` or a temporary
    directory and copy to `dist/` only at the end.
 
+8. **Every page carries the GLF attribution.** Each HTML page in `dist/`
+   (every page where it is practical; a bare full-screen canvas can put it in
+   an about panel) links to the site root and to the project's own GitHub
+   repository, in a footer or credits block:
+
+   ```html
+   <p>
+     A <a href="https://therealglf.org/">Geodynamics Liberation Front</a> project. Source and build instructions on
+     <a href="https://github.com/geodynamics-liberation-front/<slug>">GitHub</a>.
+   </p>
+   ```
+
+   The wording and styling can be adapted to suit the project, but both
+   links stay: the root link is absolute (`https://therealglf.org/`, never
+   `/` or `../..`), and the GitHub link points at the project's repository,
+   not the organization. See [california-pleasures](https://www.therealglf.org/projects/california-pleasures/)
+   for the reference footer.
+
 That is the whole contract. The build clones the repository, runs `make dist`
 in it, and copies `dist/` to `/projects/<slug>/`.
 
@@ -145,7 +163,9 @@ python3 -m http.server 8000 --directory dist
 ```
 
 Open http://localhost:8000/ and check that everything loads with no 404s in
-the browser console. Also check the failure paths: `make check` on a machine
+the browser console, and that every page shows the GLF attribution with working
+links to `https://therealglf.org/` and the project's GitHub repository (rule
+8). Also check the failure paths: `make check` on a machine
 missing a prerequisite must say what is missing, and a fetch script must fail
 when a download is truncated (truncate a file in `sources/` and rebuild). Then confirm that no URL in `dist/` starts with `/`:
 
@@ -176,11 +196,11 @@ projects.
 Then, from this repository:
 
 ```
-npm run build                          # builds every project, including the new one
+make dist                              # builds every project, including the new one
 node scripts/thumbnail.mjs <slug>      # screenshot for the projects page
-npm run build:site && npm run deploy   # publish
+make site deploy                       # publish
 git add projects.json src/thumbnails/<slug>.png && git commit && git push
 ```
 
-Publishing runs daily from Robert's machine (`npm run publish`), so a project
+Publishing runs daily from Robert's machine (`make publish`), so a project
 pushed to `main` appears on the site by the next morning.

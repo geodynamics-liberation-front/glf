@@ -28,10 +28,12 @@ const BUILD = join(ROOT, 'build');
 const REPOS = join(BUILD, 'repos');
 const DIST = join(ROOT, 'dist');
 
-const args = new Map(process.argv.slice(2).map(a => {
-  const [k, v] = a.replace(/^--/, '').split('=');
-  return [k, v === undefined ? true : v];
-}));
+const args = new Map(
+  process.argv.slice(2).map((a) => {
+    const [k, v] = a.replace(/^--/, '').split('=');
+    return [k, v === undefined ? true : v];
+  }),
+);
 const only = args.has('only') ? new Set(String(args.get('only')).split(',')) : null;
 const offline = args.has('offline');
 const noProjects = args.has('no-projects');
@@ -100,10 +102,17 @@ function describe(dir) {
 const DEFAULT_BUILD = ['make dist'];
 const DEFAULT_PUBLISH = 'dist';
 
+// When this build is started by the site's own make (`make dist`), make's flags
+// and command-line variables travel in the environment and would reach every
+// project's `make dist` (a `make -i` here would make them ignore their errors).
+// Projects are built the same way however the site build was started.
+const PROJECT_ENV = { ...process.env };
+for (const k of ['MAKEFLAGS', 'MFLAGS', 'MAKELEVEL', 'MAKEOVERRIDES']) delete PROJECT_ENV[k];
+
 function runBuild(p, dir) {
   for (const cmd of p.build || DEFAULT_BUILD) {
     log(`${p.slug}: $ ${cmd}`);
-    const r = spawnSync('sh', ['-c', cmd], { cwd: dir, stdio: 'inherit', env: process.env });
+    const r = spawnSync('sh', ['-c', cmd], { cwd: dir, stdio: 'inherit', env: PROJECT_ENV });
     if (r.status !== 0) throw new Error(`${p.slug}: "${cmd}" exited with ${r.status}`);
   }
 }
@@ -111,7 +120,8 @@ function runBuild(p, dir) {
 function publish(p, dir) {
   const publishDir = p.publish || DEFAULT_PUBLISH;
   const from = join(dir, publishDir);
-  if (!existsSync(from) || !statSync(from).isDirectory()) throw new Error(`${p.slug}: publish directory ${publishDir} not found`);
+  if (!existsSync(from) || !statSync(from).isDirectory())
+    throw new Error(`${p.slug}: publish directory ${publishDir} not found`);
   if (!existsSync(join(from, 'index.html'))) throw new Error(`${p.slug}: ${publishDir}/ has no index.html`);
   const to = join(DIST, 'projects', p.slug);
   rmSync(to, { recursive: true, force: true });
@@ -146,7 +156,7 @@ function buildProject(p) {
 
 function sortedProjects(built) {
   return [...config.projects]
-    .map(p => ({ ...p, build: built[p.slug] || {} }))
+    .map((p) => ({ ...p, build: built[p.slug] || {} }))
     .sort((a, b) => (b.added || '').localeCompare(a.added || '') || a.name.localeCompare(b.name));
 }
 
@@ -161,12 +171,14 @@ function tagList(projects) {
 function projectEntry(p) {
   const href = `/projects/${p.slug}/`;
   const thumb = existsSync(join(SRC, 'thumbnails', `${p.slug}.png`)) ? `/assets/thumbnails/${p.slug}.png` : '';
-  const tags = (p.tags || []).map(t => `<a href="/projects/#${esc(t)}" data-tag="${esc(t)}">${esc(t)}</a>`).join('');
+  const tags = (p.tags || []).map((t) => `<a href="/projects/#${esc(t)}" data-tag="${esc(t)}">${esc(t)}</a>`).join('');
   const b = p.build;
   const built = b.short
     ? `<p class="built">${b.local ? 'Built from a local copy' : `Built from commit <a href="${esc(p.repo)}/commit/${esc(b.sha)}">${esc(b.short)}</a>`}${b.date ? `, ${esc(b.date.slice(0, 10))}` : ''}.</p>`
     : '';
-  const paragraphs = (p.description && p.description.length ? p.description : [esc(p.summary)]).map(t => `<p>${t}</p>`).join('\n');
+  const paragraphs = (p.description && p.description.length ? p.description : [esc(p.summary)])
+    .map((t) => `<p>${t}</p>`)
+    .join('\n');
   return `
 <div class="thumbnail" id="${esc(p.slug)}" data-tags="${esc((p.tags || []).join(' '))}">
   ${esc(p.name)}
@@ -194,7 +206,12 @@ function buildBackgrounds() {
   const out = join(DIST, 'backgrounds');
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { recursive: true });
-  const dates = readdirSync(src).filter(f => /^\d{4}\.\d{2}\.\d{2}\.jpg$/.test(f)).map(f => f.slice(0, 10)).sort().reverse().slice(0, 30);
+  const dates = readdirSync(src)
+    .filter((f) => /^\d{4}\.\d{2}\.\d{2}\.jpg$/.test(f))
+    .map((f) => f.slice(0, 10))
+    .sort()
+    .reverse()
+    .slice(0, 30);
   const days = [];
   for (const d of dates) {
     let meta = {};
@@ -203,10 +220,18 @@ function buildBackgrounds() {
         const j = JSON.parse(readFileSync(join(src, `${d}.json`), 'utf8'));
         meta = { title: j.post?.title, author: j.post?.author, permalink: j.post?.permalink, color: j.image?.color };
       }
-    } catch (e) { console.error(`[glf] backgrounds: bad metadata for ${d}: ${e.message}`); }
+    } catch (e) {
+      console.error(`[glf] backgrounds: bad metadata for ${d}: ${e.message}`);
+    }
     cpSync(join(src, `${d}.jpg`), join(out, `${d}.jpg`));
     if (existsSync(join(src, `${d}.css`))) cpSync(join(src, `${d}.css`), join(out, `${d}.css`));
-    days.push({ date: d, title: meta.title || '', author: meta.author || '', permalink: meta.permalink || '', color: meta.color || '' });
+    days.push({
+      date: d,
+      title: meta.title || '',
+      author: meta.author || '',
+      permalink: meta.permalink || '',
+      color: meta.color || '',
+    });
   }
   writeFileSync(join(out, 'index.json'), JSON.stringify({ generated: new Date().toISOString(), days }, null, 2));
   log(`backgrounds: ${days.length} days${days.length ? `, latest ${days[0].date}` : ''}`);
@@ -216,7 +241,10 @@ function buildBackgrounds() {
 // browsers and the CDN fetch new versions after a change.
 function assetVersion() {
   const h = createHash('sha1');
-  const walk = dir => { for (const e of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) e.isDirectory() ? walk(join(dir, e.name)) : h.update(e.name).update(readFileSync(join(dir, e.name))); };
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)))
+      e.isDirectory() ? walk(join(dir, e.name)) : h.update(e.name).update(readFileSync(join(dir, e.name)));
+  };
   walk(join(SRC, 'assets'));
   return h.digest('hex').slice(0, 10);
 }
@@ -228,15 +256,28 @@ function buildSite(built) {
     site: config.site,
     v: assetVersion(),
     year: String(new Date().getFullYear()),
-    socialLinks: config.site.social.map(s => `<a href="${esc(s.url)}">${esc(s.name)}</a>`).join(''),
+    socialLinks: config.site.social.map((s) => `<a href="${esc(s.url)}">${esc(s.name)}</a>`).join(''),
     projectCount: String(projects.length),
     projectEntries: projects.map(projectEntry).join('\n'),
     latestList: projects.slice(0, 5).map(latestItem).join('\n'),
-    tagFilters: tags.map(([t, n]) => `<button type="button" class="tag-filter" data-tag="${esc(t)}" aria-pressed="false">${esc(t)}<span class="tag-count">${n}</span></button>`).join(''),
+    tagFilters: tags
+      .map(
+        ([t, n]) =>
+          `<button type="button" class="tag-filter" data-tag="${esc(t)}" aria-pressed="false">${esc(t)}<span class="tag-count">${n}</span></button>`,
+      )
+      .join(''),
   };
 
   mkdirSync(DIST, { recursive: true });
-  const pages = { 'index.html': 'index.html', 'about.html': 'about/index.html', 'projects.html': 'projects/index.html' };
+  // 404.html at the root is what Cloudflare Pages serves, with a 404 status, for
+  // anything that does not exist; without it every missing file is answered
+  // with the front page and a 200, which the cache then keeps for a day.
+  const pages = {
+    'index.html': 'index.html',
+    'about.html': 'about/index.html',
+    'projects.html': 'projects/index.html',
+    '404.html': '404.html',
+  };
   for (const [tpl, out] of Object.entries(pages)) {
     const html = render(readFileSync(join(SRC, 'pages', tpl), 'utf8'), vars, join(SRC, 'partials'));
     mkdirSync(dirname(join(DIST, out)), { recursive: true });
@@ -244,9 +285,13 @@ function buildSite(built) {
   }
   rmSync(join(DIST, 'assets'), { recursive: true, force: true });
   cpSync(join(SRC, 'assets'), join(DIST, 'assets'), { recursive: true });
-  if (existsSync(join(SRC, 'thumbnails'))) cpSync(join(SRC, 'thumbnails'), join(DIST, 'assets', 'thumbnails'), { recursive: true });
+  if (existsSync(join(SRC, 'thumbnails')))
+    cpSync(join(SRC, 'thumbnails'), join(DIST, 'assets', 'thumbnails'), { recursive: true });
   if (existsSync(join(SRC, '_headers'))) cpSync(join(SRC, '_headers'), join(DIST, '_headers'));
-  writeFileSync(join(DIST, 'projects.json'), JSON.stringify({ generated: new Date().toISOString(), projects }, null, 2));
+  writeFileSync(
+    join(DIST, 'projects.json'),
+    JSON.stringify({ generated: new Date().toISOString(), projects }, null, 2),
+  );
   buildBackgrounds();
   log(`site: ${Object.keys(pages).length} pages, ${projects.length} projects, ${tags.length} tags`);
 }
